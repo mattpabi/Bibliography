@@ -93,7 +93,7 @@ a.logo:hover{
 
 /* Search Box */
 .search-box {
-    position: absolute;
+    position: fixed;
     top: 37vh;
     width: 30vw;
     background: #efe2ba;
@@ -105,6 +105,9 @@ a.logo:hover{
     display: flex;
     align-items: center;
     padding: 2vh 2vw;
+}
+.search-box .search-row::after{
+    border-bottom: 2px solid black;
 }
 .search-box input {
     flex: 1;
@@ -132,8 +135,11 @@ a.logo:hover{
     color: #ac8968;
     font-size: 1em;
 }
+.result-box {
+    max-height: 50vh;
+    overflow-y: auto;
+}
 .search-box .result-box ul {
-    border-top: 2px solid black;
     padding: 2vh 2vh;
 }
 .search-box .result-box ul li {
@@ -318,4 +324,23 @@ p.book-info-author {
 ::-webkit-scrollbar-track {
     /* The track is the area which the thumb scrolls through */
     background: none;
+}
+
+
+
+
+
+/* Optional: Style the scrollbar for webkit browsers */
+.result-box::-webkit-scrollbar {
+    width: 1px;
+}
+.result-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+.result-box::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 4px;
+}
+.result-box::-webkit-scrollbar-thumb:hover {
+    background: transparent;
 }
