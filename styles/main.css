@@ -1,0 +1,321 @@
+/* Import fonts from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Roboto");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather");
+@import url("https://fonts.googleapis.com/css2?family=Caveat");
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch");
+
+/* UTILITIES */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", monospace;
+    /* monospace font is set as the backup font*/
+}
+
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #f3f1ea;
+}
+
+a {
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding-top: 5vh;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo {
+    font-family: "Caveat", monospace;
+    color: black;
+    font-size: 3vmax;
+    font-weight: 700;
+    margin-left: 6vw;
+    text-shadow: 0px 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+a.logo:hover{
+    border-bottom: 2.5px dashed black;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 1vmax;
+    color: #ac8968;
+    font-weight: 500;
+    text-decoration: none;
+    margin-right: 5vw;
+}
+
+.navbar a:hover {
+    color: #ac8968;
+    font-weight: 700;
+    text-shadow: #ffcc0035 1px 0 10px;
+    border-bottom: 2.5px dashed black;
+}
+
+#homepage-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 50vh;
+    text-align: center;
+}
+
+#slogan {
+    position: fixed;
+    top: 30vh;
+    font-size: 1.5vmax;
+    font-family: "Merriweather", monospace;
+}
+
+/* Search Box */
+.search-box {
+    position: absolute;
+    top: 37vh;
+    width: 30vw;
+    background: #efe2ba;
+    border-radius: 25px;
+    border: 2px solid black;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.25);
+}
+.search-box .search-row {
+    display: flex;
+    align-items: center;
+    padding: 2vh 2vw;
+}
+.search-box input {
+    flex: 1;
+    height: 2.5vh;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: #504030;
+    font-size: 1.25rem;
+}
+.search-box button {
+    background: transparent;
+    border: 0;
+    outline: 0;
+}
+.search-box button .material-symbols-outlined {
+    width: 2rem;
+    color: black;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.search-box ::placeholder {
+    font-family: "Chakra Petch", monospace;
+    /* monospace font is set as the backup font*/
+    color: #ac8968;
+    font-size: 1em;
+}
+.search-box .result-box ul {
+    border-top: 2px solid black;
+    padding: 2vh 2vh;
+}
+.search-box .result-box ul li {
+    list-style: none;
+    text-align: left;
+    border-radius: 17px;
+    padding: 3vh 2vh;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.1s;
+}
+.search-box .result-box ul li:hover {
+    background: #f3f1ea;
+    border-radius: 17px;
+    border: 2px solid black;
+}
+#search-in-catalogue {
+    position: absolute;
+    top: 5vh;
+    right: 5.78vw;
+    width: 30vw;
+    z-index: 999;
+    background: #efe2ba;
+    border-radius: 17px;
+    border: 2px solid black;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Genre List */
+.genre-list ul {
+    position: fixed;
+    top: 46vh;
+    left: 6vw;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+.genre-list ul li {
+    font-family: "Chakra Petch", monospace;
+    font-size: 1.2rem;
+    list-style: none;
+    text-align: left;
+    cursor: pointer;
+    margin-top: 1vh;
+}
+.genre-list ul li a{
+    font-family: "Chakra Petch", monospace;
+    font-size: 1.2rem;
+    transition: 0.1s;
+}
+.genre-list ul li a:hover{
+    font-weight: 900;
+    font-size: 110%;
+    color: #AC8968;
+}
+
+/* Current Page Title and Border */
+h1.current-page-title {
+    position: fixed;
+    top: 20vh;
+    left: 6vw;
+    padding-top: 1vh;
+    font-family: "Merriweather", monospace;
+    font-size: 1.5rem;
+}
+h1.current-book-genre {
+    position: fixed;
+    top: 21vh;
+    right: 6vw;
+    padding-top: 1vh;
+    font-family: "Roboto", monospace;
+    font-size: 1rem;
+    text-align: right;
+    font-weight: 400;
+}
+hr.page-info-divider {
+    position: fixed;
+    top: 25vh;
+    left: 6vw;
+    width: 88%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+h2.genres {
+    position: fixed;
+    top: 41vh;
+    left: 6vw;
+    padding-top: 1vh;
+    font-family: "Merriweather", monospace;
+    font-size: 1.25rem;
+    border-top: 2px solid black;
+}
+
+#add-book-from-catalogue {
+    position: fixed;
+    top: 30vh;
+    left: 6vw;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 150px;
+    background: #efe2ba;
+    border-radius: 17px;
+    border: 2px solid black;
+    color: black;
+    text-align: center;
+    font-size: 1.25rem;
+    transition: 0.1s;
+}
+#add-book-from-catalogue:hover {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+    transform: scale(1.01);
+}
+
+#add-book-from-bookinfo {
+    position: fixed;
+    top: 6vh;
+    right: 40vw;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 150px;
+    background: #efe2ba;
+    border-radius: 17px;
+    border: 2px solid black;
+    color: black;
+    text-align: center;
+    font-size: 1.25rem;
+    transition: 0.1s;
+    z-index: 999;
+}
+#add-book-from-bookinfo:hover {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+    transform: scale(1.01);
+}
+
+img.book-cover-in-bookinfo {
+    position: fixed;
+    top: 30vh;
+    left: 6vw;
+    width: 20vw;
+    height: auto;
+    transition: 0.3s;
+    border-radius: 15px;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+}
+img.book-cover-in-bookinfo:hover {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.35);
+    transform: scale(1.01);
+}
+
+.book-info {
+    position: fixed;
+    top: 35vh;
+    left: 30vw;
+}
+p.book-description {
+    font-family: "Roboto", monospace;
+    width: 62vw;
+    margin-bottom: 3vh;
+    font-size: 1rem;
+    line-height: 1.55rem;
+}
+p.book-info-author {
+    font-family: "Merriweather", monospace;
+    font-style: italic;
+    font-size: 0.85rem;
+    margin-top: 5vh;
+}
+
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    /* The "thumb" is the thing you click and drag on */
+    background: rgba(128, 134, 139, 1);
+    border-radius: 5px;
+    height: 100px;
+}
+
+::-webkit-scrollbar-track {
+    /* The track is the area which the thumb scrolls through */
+    background: none;
+}

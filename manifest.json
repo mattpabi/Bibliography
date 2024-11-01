@@ -1,0 +1,16 @@
+{
+    "lang": "en-us",
+    "name": "Bibliography",
+    "description": "Discover and curate your catalogue of books",
+    "start_url": "/",
+    "background_color": "#AC8968",
+    "theme_color": "#AC8968",
+    "orientation": "any",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "./bibliography_512x512.png",
+            "sizes": "512x512"
+        }
+    ]
+}
