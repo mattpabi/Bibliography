@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Set the width of the viewport to the width of the device, set the initial scale of the page to 1.0 (natural size) -->
         
         <title>Add a Book - Bibliography</title>
-        <link rel="shortcut icon" type="image/x-icon" href="../logos/bibliography_favicon.ico?v=1.1" />
+        <link rel="shortcut icon" type="image/x-icon" href="../img/bibliography_favicon.ico?v=1.1" />
         
         <link href="../styles/main.css" rel="stylesheet" type="text/css" />
         <link rel="manifest" href="../manifest.json" />
@@ -15,9 +15,9 @@
 
     <body>
         <!-- NAVBAR -->
-        <header class="header">
+        <!-- <header class="header">
             <a href="/" class="logo">Bibliography</a>
-        </header>
+        </header> -->
 
         <!-- SEARCH_BOX -->
         <div class="search-box" id="search-in-catalogue">
@@ -35,8 +35,16 @@
 
         <!-- CATALOGUE_FEATURES -->
         <a href="/add" id="add-book-from-catalogue">Add Book</a>
+        
+        
+        <!-- FORM UPLOAD FILE -->
+        <form action="/api/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" name="bookcover" id="bookcover" accept="image/*">
+            <input type="submit" value="Upload File" name="submit">
+        </form>
 
-    <script src="../scripts/searchresults.js"></script>
+        <script src="/scripts/supabase.js"></script>
+        <script src="/scripts/searchresults.js"></script>
     </body>
 
 </html>

@@ -328,19 +328,27 @@ p.book-info-author {
 
 
 
-
-
 /* Optional: Style the scrollbar for webkit browsers */
 .result-box::-webkit-scrollbar {
-    width: 1px;
+    width: 0.5vw;
 }
 .result-box::-webkit-scrollbar-track {
     background: transparent;
 }
 .result-box::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 4px;
+    background: #AC8968;
+    border-radius: 17px;
 }
 .result-box::-webkit-scrollbar-thumb:hover {
+    background: #AC8968;
+}
+
+.result-box::-webkit-scrollbar-track-piece:end {
     background: transparent;
+    margin-bottom: 4vh; 
+}
+
+.result-box::-webkit-scrollbar-track-piece:start {
+    background: transparent;
+    margin-top: 4vh;
 }

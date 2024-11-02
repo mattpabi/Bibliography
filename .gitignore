@@ -1,5 +1,8 @@
+.env
 .DS_Store
-/node_modules
 index2.js
 package-lock.json
 package.json
+/db/bibliography.db
+/node_modules
+/uploads
