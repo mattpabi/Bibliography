@@ -25,6 +25,15 @@ const readBooks = (callback) => {
   db.all(sql, [], callback);
 };
 
+// Read genres
+const readGenres = (callback) => {
+  // SQL query to select all genres from the 'genres' table
+  const sql = `SELECT * FROM genres`;
+  
+  // Execute the SQL query and pass the results to the callback function
+  db.all(sql, [], callback);
+};
+
 
 // Update a book
 const updateBook = (book_id, title, cover_url, description, callback) => {
@@ -47,4 +56,4 @@ const deleteBook = (book_id, callback) => {
 
 
 // Export the CRUD functions to be used in other parts of the application
-module.exports = { createBook, readBooks, updateBook, deleteBook }
+module.exports = { createBook, readBooks, readGenres, updateBook, deleteBook }

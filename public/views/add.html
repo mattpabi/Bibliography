@@ -15,9 +15,9 @@
 
     <body>
         <!-- NAVBAR -->
-        <!-- <header class="header">
+        <header class="header">
             <a href="/" class="logo">Bibliography</a>
-        </header> -->
+        </header>
 
         <!-- SEARCH_BOX -->
         <div class="search-box" id="search-in-catalogue">
@@ -28,23 +28,45 @@
             <div class="result-box">
             </div>
         </div>
+        <script src="/scripts/searchresults.js"></script>
 
         <!-- PAGE_INFO -->
         <h1 class="current-page-title">Add a Book</h1>
-        <hr class="page-info-divider">
-
-        <!-- CATALOGUE_FEATURES -->
-        <a href="/add" id="add-book-from-catalogue">Add Book</a>
-        
+        <hr class="page-info-divider">        
         
         <!-- FORM UPLOAD FILE -->
-        <form action="/api/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="bookcover" id="bookcover" accept="image/*">
-            <input type="submit" value="Upload File" name="submit">
+        <form action="/api/addbook" method="POST" enctype="multipart/form-data" class="add-book-form">
+            <div>
+                <label for="bookcover">Book Cover:</label>
+                <input type="file" name="add_cover" id="add_cover" accept="image/*" required>
+            </div>
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" name="add_title" id="add_title" required>
+            </div>
+            <div>
+                <label for="author">Author:</label>
+                <input type="text" name="add_author" id="add_author" required>
+            </div>
+            <div>
+                <label for="genre">Genres:</label>
+                <div class="genre-container">
+                    <input type="hidden" name="add_genres" id="selectedGenres" required 
+                    oninvalid="this.setCustomValidity('Please select at least one genre')" 
+                    oninput="this.setCustomValidity('')">
+                </div>
+                <div class="selection-count">0 of 3 potential genres selected</div>
+                <div class="genre-error" style="color: #dd5757; display: none;">Please select at least one genre</div>
+                <script src="/scripts/selectgenres.js"></script>
+            </div>
+            <div>
+                <label for="description" id="add-book-description">Description:</label>
+                <textarea name="add_description" id="add_description" rows="4" cols="100" placeholder="Add the book's descrption or synopsis here..." required></textarea>
+            </div>
+            <button type="submit" id="add-book-from-catalogue">Submit Book</button>
         </form>
 
-        <script src="/scripts/supabase.js"></script>
-        <script src="/scripts/searchresults.js"></script>
+        
     </body>
 
 </html>

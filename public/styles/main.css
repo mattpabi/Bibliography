@@ -157,7 +157,7 @@ a.logo:hover{
     border: 2px solid black;
 }
 #search-in-catalogue {
-    position: absolute;
+    position: fixed;
     top: 5vh;
     right: 5.78vw;
     width: 30vw;
@@ -249,7 +249,10 @@ h2.genres {
     transition: 0.1s;
 }
 #add-book-from-catalogue:hover {
-    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+    background: rgba(164, 217, 167, 0.7);
+    border: 2px solid ;
+    color: #213f22;
+    box-shadow: 0px 3px 15px rgba(32, 246, 4, 0.1);
     transform: scale(1.01);
 }
 
@@ -309,6 +312,83 @@ p.book-info-author {
 }
 
 
+.add-book-form {
+    position: fixed;
+    top: 30vh;
+    left: 20vw;
+}
+
+.add-book-form div {
+    margin-bottom: 2.25vh;
+}
+
+.add-book-form label {
+    font-family: "Merriweather", monospace;
+    font-size: 1.25rem;
+}
+
+
+
+.genre-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1vh;
+    width: 90%;
+}
+
+.genre-button {
+    padding: 8px 16px;
+    border: 1px solid black;
+    background: transparent;
+    color: black;
+    border-radius: 5vmax;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Chakra Petch", monospace;
+}
+
+.genre-button:hover {
+    background: rgba(239, 226, 186, 0.75);
+}
+
+.genre-button.selected {
+    background: #aee4b1;
+    border-color: black;
+}
+
+#selectedGenres {
+    display: none;
+}
+
+.selection-count {
+    color: #504030;
+    font-size: 0.9em;
+    margin-top: 1vh;
+    font-family: "Roboto", monospace;
+}
+
+
+textarea {
+    padding: 10px;
+    max-width: 100%;
+    line-height: 1.5;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid black;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.15);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    font-family: "Roboto", monospace;
+}
+
+
+#add-book-description {
+    display: block;
+    margin-bottom: 10px;
+}
+
+  
 /* SCROLLBAR */
 ::-webkit-scrollbar {
     width: 12px;

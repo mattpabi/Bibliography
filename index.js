@@ -5,6 +5,7 @@ const multer = require("multer");
 const {
     createBook,
     readBooks,
+    readGenres,
     updateBook,
     deleteBook,
 } = require("./db/scripts/crud");  // Import CRUD functions from the database scripts
@@ -74,21 +75,35 @@ router.get("/api/books", function (req, res) {
     });
 });
 
-// Route to add a book
-router.post("/api/addbook", (req, res) => {
-    // Extract book details from the request body
-    const { book_title, book_cover_url, book_description } = req.body;
-    // Call the createBook function to add the book to the database
-    createBook(book_title, book_cover_url, book_description, (err, data) => {
+// Route to retrieve all genres
+router.get("/api/genres", function (req, res) {
+    // Call the readGenres function to fetch all genres from the database
+    readGenres((err, rows) => {
         if (err) {
             // If there's an error, send a 500 status code and the error message
             res.status(500).send(err.message);
         } else {
-            // If successful, send a 201 status code and a success message with the new book's ID
-            res.status(201).send(`Book is added with ID : ${data.id}`);
+            // If successful, send a 200 status code and the genres data as JSON
+            res.status(200).json(rows);
         }
     });
 });
+
+// Route to add a book
+// router.post("/api/addbook", (req, res) => {
+//     // Extract book details from the request body
+//     const { book_title, book_cover_url, book_description } = req.body;
+//     // Call the createBook function to add the book to the database
+//     createBook(book_title, book_cover_url, book_description, (err, data) => {
+//         if (err) {
+//             // If there's an error, send a 500 status code and the error message
+//             res.status(500).send(err.message);
+//         } else {
+//             // If successful, send a 201 status code and a success message with the new book's ID
+//             res.status(201).send(`Book is added with ID : ${data.id}`);
+//         }
+//     });
+// });
 
 // Route to update a book based on its ID
 router.put("/api/book/:id", (req, res) => {
@@ -127,16 +142,16 @@ router.delete("/api/book/:id", (req, res) => {
 });
 
 // Route to upload a book's cover to Supabase
-router.post("/api/upload", upload.single("bookcover"), async (req, res) => {
+router.post("/api/upload", upload.single("book_cover"), async (req, res) => {
     try {
         // Get the uploaded file from the request
         const fileToUpload = req.file;
-
+    
         // Check if a file was actually uploaded
-        if (!file) {
-            res.status(400).json({ message: "Please upload a file" });
-            return;
-        }
+        // if (!file) {
+        //     res.status(400).json({ message: "Please upload a file" });
+        //     return;
+        // }
 
         console.log(req.file.originalname); // Log the original filename for debugging
 
@@ -167,6 +182,66 @@ router.post("/api/upload", upload.single("bookcover"), async (req, res) => {
         res.status(500).json({ error: error });
     }
 });
+
+
+router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
+    
+    let book_cover_url = "";
+
+    // UPLOAD BOOK COVER
+    try {
+        // Get the uploaded file from the request
+        const fileToUpload = req.file;
+
+        console.log(req.file.originalname); // Log the original filename for debugging
+
+        // Upload the file to Supabase storage
+        const { data, error } = await supabase.storage
+            .from("images") // Specify the bucket name ("images")
+            .upload(
+                fileToUpload.originalname,
+                fileToUpload.buffer,  // Debuffer the file that is saved in memory
+                {
+                    contentType: fileToUpload.mimetype,  // Set the correct content type
+                    upsert: true,  // Overwrite if file already exists
+                });
+
+        // Check if there was an error during upload
+        if (error) {
+            console.log(error.message);
+            throw error;
+        }
+
+        // Get the data of the uploaded file
+        const { data: uploadedFile } = supabase.storage.from("images").getPublicUrl(data.path);
+        
+        // Get the public URL of the uploaded file
+        book_cover_url = uploadedFile.publicUrl
+        console.log(book_cover_url);
+
+        // Send a successful response with the public URL
+        // res.status(200).json({ image: uploadedFile.publicUrl });
+        
+    } catch (error) {
+        // If any error occurs during the process, send a 500 error response
+        res.status(500).json({ error: error });
+    }
+
+
+    // Extract book details from the request body
+    console.log(req.body);
+    const { add_title, add_description } = req.body;
+    // Call the createBook function to add the book to the database
+    createBook(add_title, book_cover_url, add_description, (err, data) => {
+        if (err) {
+            // If there's an error, send a 500 status code and the error message
+            res.status(500).send(err.message);
+        } else {
+            // If successful, send a 201 status code and a success message with the new book's ID
+            // res.status(201).send(`Book is added with ID : ${data.id}`);
+        }
+    });
+}); 
 
 
 
