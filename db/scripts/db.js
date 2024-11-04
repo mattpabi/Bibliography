@@ -58,7 +58,7 @@ let db = new sqlite3.Database(dbPath, async (err) => {
                 } else {
                     console.log("Genres table created or already exists");
                 }
-                    // Create the BooksToAuthors table, establishing a many-to-many relationship between books and authors
+                    // Create the GenresToBooks table, establishing a many-to-many relationship between books and authors
                     db.run(
                         // 1. Start an insert statement that will add new genres to the "genres" table.
                         // 2. Skip any insertions that would cause a duplicate genre name
@@ -126,7 +126,7 @@ let db = new sqlite3.Database(dbPath, async (err) => {
             }
         );       
 
-        // Create the BooksToAuthors table, establishing a many-to-many relationship between books and genres
+        // Create the GenresToBooks table, establishing a many-to-many relationship between books and genres
         db.run(
             `
             CREATE TABLE IF NOT EXISTS GenresToBooks (
@@ -139,7 +139,25 @@ let db = new sqlite3.Database(dbPath, async (err) => {
                 if (err) {
                     console.error("Error creating GenresToBooks table:", err.message);
                 } else {
-                    console.log("GenresToBooks table created or already exists\n\n");
+                    console.log("GenresToBooks table created or already exists");
+                }
+            }
+        );
+
+        // Create the AuthorToBook table, establishing a many-to-many relationship between books and genres
+        db.run(
+            `
+            CREATE TABLE IF NOT EXISTS AuthorToBook (
+                book_id INTEGER,
+                author_id INTEGER,
+                FOREIGN KEY (book_id) REFERENCES books(book_id),
+                FOREIGN KEY (author_id) REFERENCES authors(author_id),
+                PRIMARY KEY (book_id, author_id))`,
+            (err) => {
+                if (err) {
+                    console.error("Error creating AuthorToBook table:", err.message);
+                } else {
+                    console.log("AuthorToBook table created or already exists");
                 }
             }
         );

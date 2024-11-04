@@ -51,6 +51,7 @@ function display(input, result) {
     // If input is empty or whitespace, clear the results box
     if (!input.trim()) {
         resultsBox.innerHTML = '';
+        document.getElementById('search-row-id').style.borderBottom = '';
         return;
     }
 
@@ -61,10 +62,12 @@ function display(input, result) {
 
     // Update the innerHTML of results box with generated list items
     resultsBox.innerHTML = "<ul>" + content.join('') + "</ul>";
+    document.getElementById('search-row-id').style.borderBottom = '2px solid black';
 }
 
 // Function to handle selection of a list item
 function selectInput(list) {
     inputBox.value = list.innerHTML; // Set input box value to selected list item text
     resultsBox.innerHTML = ''; // Clear the results box
+    document.getElementById('search-row-id').style.borderBottom = '';
 }
