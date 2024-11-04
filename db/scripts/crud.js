@@ -60,7 +60,7 @@ const createAuthor = (author_name, callback) => {
         // If author exists, return their ID
         if (row) {
             console.log(`row ${row}`);
-            callback({ id: row.author_id });
+            callback({ id: row.author_id }, err);
         } else {
             // If author doesn't exist, insert new author
             const insertSql = `INSERT INTO authors (author_name) VALUES (?)`;
@@ -71,7 +71,7 @@ const createAuthor = (author_name, callback) => {
                 } else {
                     // Return the ID of the newly inserted author
                     console.log("successfully ran insert new author")
-                    callback({ id: this.lastID });
+                    callback({ id: this.lastID }, err);
                 }
             });
         }
