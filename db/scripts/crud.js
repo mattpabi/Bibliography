@@ -50,16 +50,13 @@ const createAuthor = (author_name, callback) => {
     // First, check if author exists
     const checkSql = `SELECT author_id FROM authors WHERE author_name = ? COLLATE NOCASE`; // COLLATE NOCASE makes it case-insensitive
 
-    console.log("IN CREATEAUTHOR FUNCTION")
     db.get(checkSql, [cleaned_name], (err, row) => {
         if (err) {
-            console.log(err);
             callback(err);
         }
 
         // If author exists, return their ID
         if (row) {
-            console.log(`row ${row}`);
             callback({ id: row.author_id }, err);
         } else {
             // If author doesn't exist, insert new author
@@ -70,7 +67,6 @@ const createAuthor = (author_name, callback) => {
                     callback(err);
                 } else {
                     // Return the ID of the newly inserted author
-                    console.log("successfully ran insert new author")
                     callback({ id: this.lastID }, err);
                 }
             });
@@ -83,8 +79,6 @@ const addAuthorToBook = async (book_id, author_id) => {
     try {
         // SQL query to insert a new row mapping the book_id with the author_id
         const sql = `INSERT INTO AuthorToBook (book_id, author_id) VALUES (?, ?)`;
-
-        console.log("ADDING AUTHOR TO BOOK")
 
         await new Promise((resolve, reject) => {
             db.run(sql, [book_id, author_id], function (err) {
@@ -139,6 +133,55 @@ const deleteBook = (book_id, callback) => {
     db.run(sql, book_id, callback);
 };
 
+// Get the data about a certain book
+const getBookData = (book_id, callback) => {
+    const sql = `SELECT 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description,
+                    GROUP_CONCAT(DISTINCT genres.genre_name) AS genre_name,
+                    GROUP_CONCAT(DISTINCT authors.author_name) AS author_name
+                FROM books
+                JOIN GenresToBooks ON books.book_id = GenresToBooks.book_id
+                JOIN genres ON GenresToBooks.genre_id = genres.genre_id 
+                JOIN AuthorToBook ON books.book_id = AuthorToBook.book_id
+                JOIN authors ON AuthorToBook.author_id = authors.author_id
+                WHERE books.book_id = ?
+                GROUP BY 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description`;
+
+    // Execute the SQL query with the provided book_id
+    db.all(sql, book_id, callback);
+};
+
+// Get the data about a certain book
+const getAllBookData = (callback) => {
+    const sql = `SELECT 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description,
+                    GROUP_CONCAT(DISTINCT genres.genre_name) AS genre_name,
+                    GROUP_CONCAT(DISTINCT authors.author_name) AS author_name
+                FROM books
+                JOIN GenresToBooks ON books.book_id = GenresToBooks.book_id
+                JOIN genres ON GenresToBooks.genre_id = genres.genre_id 
+                JOIN AuthorToBook ON books.book_id = AuthorToBook.book_id
+                JOIN authors ON AuthorToBook.author_id = authors.author_id
+                GROUP BY 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description`;
+
+    // Execute the SQL query with the provided book_id
+    db.all(sql, [], callback);
+};
+
 // Export the CRUD functions to be used in other parts of the application
 module.exports = {
     createBook,
@@ -149,4 +192,6 @@ module.exports = {
     readGenres,
     updateBook,
     deleteBook,
+    getBookData,
+    getAllBookData,
 };

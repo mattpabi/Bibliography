@@ -11,6 +11,8 @@ const {
     readGenres,
     updateBook,
     deleteBook,
+    getBookData,
+    getAllBookData,
 } = require("./db/scripts/crud"); // Import CRUD functions from the database scripts
 require("dotenv").config(); // Allow the app to work with .env files
 
@@ -22,6 +24,8 @@ const router = express.Router(); // Create a Router object from Express framewor
 const port = 8080; // Set the port for the server to listen on
 app.use(express.json()); // Parse JSON bodies of incoming requests
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (as sent by HTML forms)
+app.set("view engine", "ejs"); // Set EJS as the view engine
+app.set("views", path.join(__dirname, "public", "views")); // directory where your templates are stored
 
 // Create a Supabase client (to upload the images of the book covers)
 const { createClient } = require("@supabase/supabase-js");
@@ -55,15 +59,65 @@ router.get("/add", function (req, res) {
 });
 
 // Route for the book info page
-router.get("/bookinfo", function (req, res) {
-    res.sendFile(path.join(__dirname + "/public/views/bookinfo.html"));
+// Dynamic Template Loader with Pug
+router.get("/book/:id", function (req, res) {
+    // Add this at the start of your route
+    const viewPath = path.join(__dirname, "public", "views", "book.ejs");
+
+    try {
+        const book_id = req.params.id;
+
+        getBookData(book_id, (err, rows) => {
+            if (err) {
+                res.status(500).send(err.message);
+            } else {
+                // First, check if any data was returned
+                if (!rows || rows.length === 0) {
+                    console.log("No rows found for book_id:", book_id);
+                    return res.status(404).send("Book not found");
+                }
+
+                const row = rows[0];
+
+                // Prepare the book data for the template
+                const bookData = {
+                    bookTitle: row.book_title,
+                    bookGenre:
+                        row.genre_name.replace(/,\s*/g, ", ") +
+                        (row.genre_name.endsWith(",") ? " " : ""),
+                    bookCoverUrl: row.book_cover_url,
+                    bookDescription: row.book_description, // Split description into paragraphs if it contains newlines
+                    bookAuthor: row.author_name,
+                };
+
+                // Add error handling for render
+                try {
+                    res.render("book", bookData, (err, html) => {
+                        if (err) {
+                            console.error("Render error:", err);
+                            return res
+                                .status(500)
+                                .send("Error rendering template");
+                        }
+                        res.send(html);
+                    });
+                } catch (renderError) {
+                    console.error("Error during render:", renderError);
+                    res.status(500).send("Error rendering template");
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Error in /book/:id route:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
 // API ROUTES
 // Route to retrieve all books
 router.get("/api/books", function (req, res) {
     // Call the readBooks function to fetch all books from the database
-    readBooks((err, rows) => {
+    getAllBookData((err, rows) => {
         if (err) {
             // If there's an error, send a 500 status code and the error message
             res.status(500).send(err.message);
@@ -87,22 +141,6 @@ router.get("/api/genres", function (req, res) {
         }
     });
 });
-
-// Route to add a book
-// router.post("/api/addbook", (req, res) => {
-//     // Extract book details from the request body
-//     const { book_title, book_cover_url, book_description } = req.body;
-//     // Call the createBook function to add the book to the database
-//     createBook(book_title, book_cover_url, book_description, (err, data) => {
-//         if (err) {
-//             // If there's an error, send a 500 status code and the error message
-//             res.status(500).send(err.message);
-//         } else {
-//             // If successful, send a 201 status code and a success message with the new book's ID
-//             res.status(201).send(`Book is added with ID : ${data.id}`);
-//         }
-//     });
-// });
 
 // Route to update a book based on its ID
 router.put("/api/book/:id", (req, res) => {
@@ -138,45 +176,6 @@ router.delete("/api/book/:id", (req, res) => {
             res.status(200).send(`Deleted Book with ID : ${req.params.id}`);
         }
     });
-});
-
-// Route to upload a book's cover to Supabase
-router.post("/api/upload", upload.single("book_cover"), async (req, res) => {
-    try {
-        // Get the uploaded file from the request
-        const fileToUpload = req.file;
-
-        // Log the original filename for debugging
-        console.log(req.file.originalname);
-
-        // Upload the file to Supabase storage
-        const { data, error } = await supabase.storage
-            .from("images") // Specify the bucket name ("images")
-            .upload(
-                fileToUpload.originalname,
-                fileToUpload.buffer, // Debuffer the file that is saved in memory
-                {
-                    contentType: fileToUpload.mimetype, // Set the correct content type
-                    upsert: true, // Overwrite if file already exists
-                }
-            );
-
-        // Check if there was an error during upload
-        if (error) {
-            throw error;
-        }
-
-        // Get the public URL of the uploaded file
-        const { data: uploadedFile } = supabase.storage
-            .from("images")
-            .getPublicUrl(data.path);
-
-        // Send a successful response with the public URL
-        res.status(200).json({ image: uploadedFile.publicUrl });
-    } catch (error) {
-        // If any error occurs during the process, send a 500 error response
-        res.status(500).json({ error: error });
-    }
 });
 
 router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
@@ -254,17 +253,12 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
     );
 
     author_name = req.body.add_author;
-    console.log(author_name);
     createAuthor(author_name, (data_of_author, err) => {
-        console.log("BEFORE ERROR")
         if (err) {
             // If there's an error, send a 500 status code and the error message
-            console.log(err)
             res.status(500).send(err.message);
         } else {
             // If successful
-            console.log("INSIDE ELSE")
-            console.log(`DATA OF AUTHOR ${data_of_author}`)
             new_author_id = data_of_author.id;
             console.log(`Author is added with ID : ${new_author_id}`);
 
@@ -273,7 +267,7 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
             } catch (error) {
                 console.error(error);
             }
-        } console.log("AFTER ELSE")
+        }
     });
 });
 

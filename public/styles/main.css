@@ -55,7 +55,7 @@ a {
     text-shadow: 0px 3px 15px rgba(0, 0, 0, 0.05);
 }
 
-a.logo:hover{
+a.logo:hover {
     border-bottom: 2.5px dashed black;
 }
 
@@ -106,7 +106,7 @@ a.logo:hover{
     align-items: center;
     padding: 2vh 2vw;
 }
-.search-box .search-row::after{
+.search-box .search-row::after {
     border-bottom: 2px solid black;
 }
 .search-box input {
@@ -185,15 +185,15 @@ a.logo:hover{
     cursor: pointer;
     margin-top: 1vh;
 }
-.genre-list ul li a{
+.genre-list ul li a {
     font-family: "Chakra Petch", monospace;
     font-size: 1.2rem;
     transition: 0.1s;
 }
-.genre-list ul li a:hover{
+.genre-list ul li a:hover {
     font-weight: 900;
     font-size: 110%;
-    color: #AC8968;
+    color: #ac8968;
 }
 
 /* Current Page Title and Border */
@@ -250,7 +250,7 @@ h2.genres {
 }
 #add-book-from-catalogue:hover {
     background: rgba(164, 217, 167, 0.7);
-    border: 2px solid ;
+    border: 2px solid;
     color: #213f22;
     box-shadow: 0px 3px 15px rgba(32, 246, 4, 0.1);
     transform: scale(1.01);
@@ -281,15 +281,19 @@ img.book-cover-in-bookinfo {
     position: fixed;
     top: 30vh;
     left: 6vw;
-    width: 20vw;
+    width: 17vw;
     height: auto;
+    max-height: 63vh;
     transition: 0.3s;
     border-radius: 15px;
     box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
 }
 img.book-cover-in-bookinfo:hover {
+    border-radius: 15px;
     box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.35);
-    transform: scale(1.01);
+    border-radius: 15px;
+    width: 17.5vw;
+    max-height: 65vh;
 }
 
 .book-info {
@@ -311,7 +315,6 @@ p.book-info-author {
     margin-top: 5vh;
 }
 
-
 .add-book-form {
     position: fixed;
     top: 30vh;
@@ -326,8 +329,6 @@ p.book-info-author {
     font-family: "Merriweather", monospace;
     font-size: 1.25rem;
 }
-
-
 
 .genre-container {
     display: flex;
@@ -370,7 +371,6 @@ p.book-info-author {
     font-family: "Roboto", monospace;
 }
 
-
 textarea {
     padding: 10px;
     max-width: 100%;
@@ -399,7 +399,7 @@ textarea {
 
 .add-book-form #add_author {
     padding: 5px;
-    width: 9vw; 
+    width: 9vw;
     line-height: 1.5;
     border-radius: 6px;
     background: transparent;
@@ -414,13 +414,11 @@ textarea {
     margin-left: 0.5vw;
 }
 
-
 #add-book-description {
     display: block;
     margin-bottom: 10px;
 }
 
-  
 /* SCROLLBAR */
 ::-webkit-scrollbar {
     width: 12px;
@@ -438,8 +436,6 @@ textarea {
     background: none;
 }
 
-
-
 /* Optional: Style the scrollbar for webkit browsers */
 .result-box::-webkit-scrollbar {
     width: 0.5vw;
@@ -448,16 +444,16 @@ textarea {
     background: transparent;
 }
 .result-box::-webkit-scrollbar-thumb {
-    background: #AC8968;
+    background: #ac8968;
     border-radius: 17px;
 }
 .result-box::-webkit-scrollbar-thumb:hover {
-    background: #AC8968;
+    background: #ac8968;
 }
 
 .result-box::-webkit-scrollbar-track-piece:end {
     background: transparent;
-    margin-bottom: 4vh; 
+    margin-bottom: 4vh;
 }
 
 .result-box::-webkit-scrollbar-track-piece:start {
