@@ -120,7 +120,8 @@ router.get("/api/books", function (req, res) {
     getAllBookData((err, rows) => {
         if (err) {
             // If there's an error, send a 500 status code and the error message
-            res.status(500).send(err.message);
+            // res.status(500).send(err.message);
+            res.status(500).json({ error: "Failed to fetch books" });
         } else {
             // If successful, send a 200 status code and the books data as JSON
             res.status(200).json(rows);
@@ -269,6 +270,11 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
             }
         }
     });
+
+    // Wait for 1 second before redirecting to the information page of the newly added book.
+    setTimeout(() => {
+        res.redirect(`/book/${new_book_id}`);
+    }, 1000);
 });
 
 // LAST STEPS //
