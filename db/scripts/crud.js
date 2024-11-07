@@ -158,7 +158,7 @@ const getBookData = (book_id, callback) => {
     db.all(sql, book_id, callback);
 };
 
-// Get the data about a certain book
+// Get the data about all books
 const getAllBookData = (callback) => {
     const sql = `SELECT 
                     books.book_id, 
@@ -182,6 +182,36 @@ const getAllBookData = (callback) => {
     db.all(sql, [], callback);
 };
 
+// Get the data about a limited number of books
+const getLimitedBookData = (offset, callback) => {
+    const sql = `SELECT 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description,
+                    GROUP_CONCAT(DISTINCT genres.genre_name) AS genre_name,
+                    GROUP_CONCAT(DISTINCT authors.author_name) AS author_name
+                FROM books
+                JOIN GenresToBooks ON books.book_id = GenresToBooks.book_id
+                JOIN genres ON GenresToBooks.genre_id = genres.genre_id 
+                JOIN AuthorToBook ON books.book_id = AuthorToBook.book_id
+                JOIN authors ON AuthorToBook.author_id = authors.author_id
+                GROUP BY 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description
+                LIMIT 15 OFFSET ?`;
+
+    // Execute the SQL query with the provided book_id
+    db.all(sql, [offset], callback);
+};
+
+const countBooks = (callback) => {
+    const sql = `SELECT count (*) AS total_books FROM books`;
+    db.all(sql, [], callback);
+}
+
 // Export the CRUD functions to be used in other parts of the application
 module.exports = {
     createBook,
@@ -194,4 +224,6 @@ module.exports = {
     deleteBook,
     getBookData,
     getAllBookData,
+    getLimitedBookData,
+    countBooks
 };

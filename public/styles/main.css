@@ -225,7 +225,8 @@ hr.page-info-divider {
     border-radius: 5px;
 }
 #catalogue-divider {
-    width: 90%;
+    width: 90.75%;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.25);
 }
 h2.genres {
     position: fixed;
@@ -425,7 +426,7 @@ textarea {
 
 #catalogue-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10vw, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(12vw, 1fr));
     gap: 2rem;
     padding: 2rem;
     margin-top: 25vh;

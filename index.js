@@ -13,6 +13,8 @@ const {
     deleteBook,
     getBookData,
     getAllBookData,
+    getLimitedBookData,
+    countBooks,
 } = require("./db/scripts/crud"); // Import CRUD functions from the database scripts
 require("dotenv").config(); // Allow the app to work with .env files
 
@@ -115,7 +117,7 @@ router.get("/book/:id", function (req, res) {
 
 // API ROUTES
 // Route to retrieve all books
-router.get("/api/books", function (req, res) {
+router.get("/api/books/", function (req, res) {
     // Call the readBooks function to fetch all books from the database
     getAllBookData((err, rows) => {
         if (err) {
@@ -124,6 +126,37 @@ router.get("/api/books", function (req, res) {
             res.status(500).json({ error: "Failed to fetch books" });
         } else {
             // If successful, send a 200 status code and the books data as JSON
+            res.status(200).json(rows);
+        }
+    });
+});
+
+// Route to retrieve books, offset with SQL
+router.get("/api/books/:offset", function (req, res) {
+    // Store the amount of offset
+    const offset = req.params.offset;
+
+    // Call the readBooks function to fetch all books from the database
+    getLimitedBookData(offset, (err, rows) => {
+        if (err) {
+            // If there's an error, send a 500 status code and the error message
+            // res.status(500).send(err.message);
+            res.status(500).json({ error: "Failed to fetch books" });
+        } else {
+            // If successful, send a 200 status code and the books data as JSON
+            res.status(200).json(rows);
+        }
+    });
+});
+
+router.get("/api/countbooks", function (req, res) {
+    countBooks((err, rows) => {
+        if (err) {
+            res.status(500).send(err.message);
+        } else {
+            const count = rows[0]["total_books"];
+            const bookCount = parseInt(count, 10);
+            console.log("Number of books:", count);
             res.status(200).json(rows);
         }
     });
