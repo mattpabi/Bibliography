@@ -1,8 +1,8 @@
-let bookCount;
+var totalBookCount;
 
 // Wait for the DOM to be fully loaded before running any code
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialie the catalogue by loading books when the page is ready
+    // Initialise the catalogue by loading books when the page is ready
     loadCatalogue(0);
 });
 
@@ -79,29 +79,14 @@ function loadCatalogue(offset) {
         })
         .then((data) => {
             console.log(`Received data: ${data}`);
-            bookCount = data[0].total_books;
-            console.log("Total number of books:", bookCount);
+            totalBookCount = data[0].total_books;
+            console.log("Total number of books:", totalBookCount);
             //total_books
-            //return bookCount;
-            
-            document.getElementById("total_books").textContent = offset;
-
-            if (offset + 15 >= bookCount) {
-                document.getElementById("next-page-button").textContent = `No more books`;
-            } else if (offset + 30 < bookCount) {
-                document.getElementById("next-page-button").textContent = `Show books ${offset+15}-${offset+30} out of ${bookCount}`;
-            } else if (offset + 30 >= bookCount) {
-                document.getElementById("next-page-button").textContent = `Show books ${offset+15}-${bookCount} out of ${bookCount}`;
-            }
-            
-            if (offset === 0 && offset+15<=bookCount) {
-                document.getElementById("previous-page-button").textContent = `Already showing books 0-${offset+15}`;
-            } else if (offset > 0 && offset+15<=bookCount) {
-                document.getElementById("previous-page-button").textContent = `Show books ${offset-15}-${offset} out of ${bookCount}`;
-            }
+            //return totalBookCount;
+            updateButtonStates(offset, totalBookCount);
         })
         .catch((error) => {
-            console.error("Error in fetchBookCount:", error);
+            console.error("Error in fetch totalBookCount:", error);
         });
 }
 
@@ -147,7 +132,7 @@ document.getElementById("previous-page-button").onclick =
     paginator.previousPage;
 
 // Function to update button states based on current offset
-function updateButtonStates(offset) {
+function updateButtonStates(offset, totalBookCount) {
     const nextButton = document.getElementById("next-page-button");
     const prevButton = document.getElementById("previous-page-button");
 
@@ -157,15 +142,73 @@ function updateButtonStates(offset) {
     // Example: Disable next button after reaching a certain offset
     // Adjust the condition based on your total number of items
     console.log(`OFFSET ${offset}`);
-    if (offset + 15 >= bookCount) {
-        nextButton.disabled = true;
-        nextButton.textContent = "No more items";
-    } else {
-        nextButton.disabled = false;
-        nextButton.textContent = `Show ${offset} of ${bookCount} books`;
-    }
-}
+    console.log(`totalBookCount ${totalBookCount}`);
+    document.getElementById("catalogue-header-and-count").textContent = `Your Catalogue (${totalBookCount} books)`
 
-// Initial load of the first page
-loadCatalogue(0);
-updateButtonStates(0);
+    // If there are no books in the catalogue
+    if (totalBookCount === 0) {
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.documentElement.style.overflow = 'hidden';
+        document.getElementById("previous-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+
+    // For the first page
+    } else if (offset === 0) {
+        document.getElementById("next-page-button").style.visibility = "visible";
+        document.getElementById("previous-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").textContent = `Show next 15 books`;
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+
+    // If there is exactly one book in the catalogue
+    } else if (totalBookCount === 1) {
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.documentElement.style.overflow = 'hidden';
+        document.getElementById("next-page-button").style.visibility = "hidden";
+        document.getElementById("previous-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+    
+    // If there are less than 5 books (one row on desktop) in the catalogue
+    } else if (totalBookCount <= 5) {
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.documentElement.style.overflow = 'hidden';
+        document.getElementById("next-page-button").style.visibility = "hidden";
+        document.getElementById("previous-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+    
+    // If there are more than 5 books but at most 15 books in the catalogue (enough to fit one page)
+    } else if (totalBookCount > 5 && totalBookCount <=15) {
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.documentElement.style.overflow = 'auto';
+        document.getElementById("next-page-button").style.visibility = "hidden";
+        document.getElementById("previous-page-button").style.visibility = "hidden";
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+    
+    // If there are more than 15 books
+    } else if (totalBookCount > 15 && (totalBookCount - offset - 15) >= 15 ) {
+        document.getElementById("next-page-button").style.visibility = "visible";
+        document.getElementById("previous-page-button").style.visibility = "visible";
+        document.getElementById("next-page-button").textContent = `Show next 15 books`;
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+
+    } else if (totalBookCount > 15 && (offset + 15) > totalBookCount ) {
+        document.getElementById("next-page-button").style.visibility = "visible";
+        document.getElementById("previous-page-button").style.visibility = "visible";
+        document.getElementById("next-page-button").textContent = `No more books`;
+        document.getElementById("next-page-button").style.background = "#f3f1ea";
+        document.getElementById("next-page-button").style.pointerEvents = "none";
+        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
+        
+    } else if (totalBookCount > 15 && (offset + 30) > totalBookCount) {
+        document.getElementById("next-page-button").style.visibility = "visible";
+        document.getElementById("previous-page-button").style.visibility = "visible";
+        document.getElementById("next-page-button").textContent = `Show next ${totalBookCount - offset - 15} books`;
+        document.getElementById("next-page-button").style.background = "#efe2ba";
+        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
+        document.getElementById("next-page-button").style.pointerEvents = "auto";
+
+    };
+}

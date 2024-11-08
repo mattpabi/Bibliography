@@ -493,6 +493,48 @@ textarea {
     z-index: 0;
 }
 
+#total_books {
+    position: fixed;
+    top: 21vh;
+    right: 37vw;
+    padding-top: 1vh;
+    font-family: "Chakra Petch", monospace;
+    font-size: 1rem;
+    z-index: 999;
+    text-align: right;
+}
+
+#next-page-button,
+#previous-page-button {
+    position: fixed;
+    top: 19.15vh;
+    right: 5vw;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    background: #efe2ba;
+    border-radius: 17px;
+    border: 2px solid black;
+    color: black;
+    text-align: center;
+    font-size: 1rem;
+    transition: 0.1s;
+}
+
+#next-page-button:hover,
+#previous-page-button:hover {
+    transform: scale(1.05);
+}
+
+#next-page-button {
+    right: 5vw;
+    width: 11rem;
+}
+
+#previous-page-button {
+    right: 20vw;
+    width: 13rem;
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar {
     width: 12px;
