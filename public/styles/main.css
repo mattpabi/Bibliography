@@ -75,6 +75,11 @@ a.logo:hover {
     border-bottom: 2.5px dashed black;
 }
 
+#navbar-in-book-info {
+    position: fixed;
+    left: 35vw;
+}
+
 #homepage-main {
     display: flex;
     justify-content: center;
@@ -230,6 +235,24 @@ a.logo:hover {
     font-size: 1.2rem;
     color: #ac8968;
 }
+#clear-genre-filter {
+    position: fixed;
+    top: 30vh;
+    left: 6vw;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 175px;
+    background: #efe2ba;
+    border-radius: 17px;
+    border: 2px solid black;
+    color: black;
+    text-align: center;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+#clear-genre-filter:hover {
+    transform: scale(1.05);
+}
 
 /* Current Page Title and Border */
 h1.current-page-title {
@@ -273,11 +296,15 @@ h2.genres {
     border-top: 2px solid black;
 }
 
-
-#add-book-from-catalogue, #submit-book-button {
+#text-nav-beside-search{
     position: fixed;
-    top: 30vh;
-    left: 6vw;
+    z-index: 999;
+    top: 7vh;
+    right: 35vw;
+    text-align: right;
+}
+#submit-book-button {
+    position: fixed;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     width: 150px;
@@ -289,9 +316,9 @@ h2.genres {
     font-size: 1.25rem;
     transition: all 0.3s ease;
 }
-#add-book-from-catalogue:hover {
-    transform: scale(1.02);
-    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.1);
+#submit-book-button {
+    top: 30vh;
+    left: 6vw;
 }
 #submit-book-button:hover {
     background: rgba(164, 217, 167, 0.7);

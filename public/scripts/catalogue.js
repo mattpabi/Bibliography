@@ -129,13 +129,21 @@ const paginator = createPaginator();
 document.getElementById("next-page-button").onclick = paginator.nextPage;
 
 // Watch the previous-page-button to move to the previous page
-document.getElementById("previous-page-button").onclick =
-    paginator.previousPage;
+document.getElementById("previous-page-button").onclick = paginator.previousPage;
+
+const clearGenreFilter = function() {
+    window.location = window.location
+  };
+  
+document.getElementById("clear-genre-filter").onclick = clearGenreFilter;
+
+
 
 // Function to update button states based on current offset
 function updateButtonStates(offset, totalBookCount) {
     const nextButton = document.getElementById("next-page-button");
     const prevButton = document.getElementById("previous-page-button");
+    const catalogueCount = document.getElementById("catalogue-header-and-count")
 
     // Disable previous button if we're on the first page
     prevButton.disabled = offset === 0;
@@ -144,22 +152,59 @@ function updateButtonStates(offset, totalBookCount) {
     // Adjust the condition based on your total number of items
     console.log(`OFFSET ${offset}`);
     console.log(`totalBookCount ${totalBookCount}`);
-    document.getElementById("catalogue-header-and-count").textContent = `Your Catalogue (${totalBookCount} books)`;
-
+    catalogueCount.textContent = `Your Catalogue (${totalBookCount} books)`;
+    document.documentElement.style.overflow = "hidden";
+    
     // If there are no books in the catalogue
     if (totalBookCount === 0) {
-        document.documentElement.style.overflow = "hidden";
+        catalogueCount.textContent = `Your Catalogue has 0 books, add some!`;
+
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+        
+        prevButton.style.visibility = "hidden";
+        prevButton.style.background = "#f3f1ea";
+        nextButton.style.pointerEvents = "auto";
+        prevButton.style.pointerEvents = "none";
+
+    // If there is exactly one book in the catalogue
+    } else if (totalBookCount === 1) {
+        catalogueCount.textContent = `Your Catalogue (1 book)`;
+
         nextButton.style.visibility = "hidden";
         nextButton.style.background = "#efe2ba";
         nextButton.style.pointerEvents = "auto";
 
         prevButton.style.visibility = "hidden";
         prevButton.style.background = "#f3f1ea";
-        nextButton.style.pointerEvents = "auto";
         prevButton.style.pointerEvents = "none";
 
-        // For the first page
-    } else if (offset === 0) {
+    // If there are less than 5 books (one row on desktop) in the catalogue
+    } else if (totalBookCount <= 5) {
+        document.documentElement.style.overflow = "auto";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+
+        prevButton.style.visibility = "hidden";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+
+    // If there are more than 5 books but at most 15 books in the catalogue (enough to fit one page)
+    } else if (totalBookCount > 5 && totalBookCount <= 15) {
+        document.documentElement.style.overflow = "auto";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+
+        prevButton.style.visibility = "hidden";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+
+    // If you are on the first page of a multi-page catalogue
+    } else if (offset === 0 && totalBookCount > 15) {
+        document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";
         nextButton.style.background = "#efe2ba";
         nextButton.style.pointerEvents = "auto";
@@ -170,44 +215,9 @@ function updateButtonStates(offset, totalBookCount) {
         prevButton.style.pointerEvents = "none";
         prevButton.textContent = `Currently on first page`;
 
-        // If there is exactly one book in the catalogue
-    } else if (totalBookCount === 1) {
-        document.documentElement.style.overflow = "hidden";
-        nextButton.style.visibility = "hidden";
-        nextButton.style.background = "#efe2ba";
-        nextButton.style.pointerEvents = "auto";
-
-        prevButton.style.visibility = "visible";
-        prevButton.style.background = "#f3f1ea";
-        prevButton.style.pointerEvents = "none";
-        prevButton.textContent = `Currently on first page`;
-
-        // If there are less than 5 books (one row on desktop) in the catalogue
-    } else if (totalBookCount <= 5) {
-        document.documentElement.style.overflow = "hidden";
-        nextButton.style.visibility = "hidden";
-        nextButton.style.background = "#efe2ba";
-        nextButton.style.pointerEvents = "auto";
-
-        prevButton.style.visibility = "visible";
-        prevButton.style.background = "#f3f1ea";
-        prevButton.style.pointerEvents = "none";
-        prevButton.textContent = `Currently on first page`;
-
-        // If there are more than 5 books but at most 15 books in the catalogue (enough to fit one page)
-    } else if (totalBookCount > 5 && totalBookCount <= 15) {
-        document.documentElement.style.overflow = "auto";
-        nextButton.style.visibility = "hidden";
-        nextButton.style.background = "#efe2ba";
-        nextButton.style.pointerEvents = "auto";
-
-        prevButton.style.visibility = "visible";
-        prevButton.style.background = "#f3f1ea";
-        prevButton.style.pointerEvents = "none";
-        prevButton.textContent = `Currently on first page`;
-
-        // If there are more than 15 books and the amount of books over the current page is more than 15
+    // If there are more than 15 books and the amount of books over the current page is more than 15
     } else if (totalBookCount > 15 && totalBookCount - offset - 15 >= 15) {
+        document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";
         nextButton.style.background = "#efe2ba";
         nextButton.style.pointerEvents = "auto";
@@ -220,6 +230,7 @@ function updateButtonStates(offset, totalBookCount) {
 
         // If there are more than 15 books and there is no more leftover books for the next page of the catalogue
     } else if (totalBookCount > 15 && offset + 15 > totalBookCount) {
+        document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";
         nextButton.style.background = "#f3f1ea";
         nextButton.style.pointerEvents = "none";
@@ -232,6 +243,7 @@ function updateButtonStates(offset, totalBookCount) {
 
         // If there are more than 15 books and the amount of leftover books for the next page of the catalogue is less than 15
     } else if (totalBookCount > 15 && offset + 30 > totalBookCount) {
+        document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";
         nextButton.style.background = "#efe2ba";
         nextButton.style.pointerEvents = "auto";

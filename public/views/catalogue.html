@@ -17,6 +17,10 @@
         <!-- NAVBAR -->
         <header class="header">
             <a href="/" class="logo">Bibliography</a>
+
+            <nav class="navbar" id="text-nav-beside-search">
+                <a href="/add">Add a Book  <span class="material-symbols-outlined">add_box</span></a>
+            </nav>
         </header>
 
         <!-- SEARCH_BOX -->
@@ -33,14 +37,12 @@
         <h1 class="current-page-title" id="catalogue-header-and-count">Your Catalogue</h1>
         <hr class="page-info-divider" id="catalogue-divider">
         <button id="next-page-button" style="z-index: 998; visibility: hidden;"></button>
-        <button id="previous-page-button" style="z-index: 998; visibility: hidden;"></button>
+        <button id="previous-page-button" style="z-index: 998; visibility: hidden; background: #F3F1EA;"></button>
         <div id="header-blocker"></div>
-
-        <!-- CATALOGUE_FEATURES -->
-        <a href="/add" id="add-book-from-catalogue">Add a Book</a>
         
         <!-- GENRE LIST -->
         <h2 class="genres">Genres</h2>
+        <button id="clear-genre-filter">Reset Catalogue</button>
         <div class="genre-list">
             <ul id="genres-ulist">
             </ul>
@@ -48,6 +50,9 @@
 
         <div id="catalogue-container" class="catalogue-container"></div>
 
+    <script>
+        document.documentElement.style.overflow = "hidden";
+    </script>
     <script src="../../scripts/searchresults.js"></script>
     <script src="../scripts/catalogue.js"></script>
     </body>

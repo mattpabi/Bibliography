@@ -17,6 +17,11 @@
         <!-- NAVBAR -->
         <header class="header">
             <a href="/" class="logo">Bibliography</a>
+
+            <nav class="navbar" id="navbar-in-book-info">
+                <a href="/catalogue">View your Catalogue  <span class="material-symbols-outlined">library_books</span></a>
+                <a href="/add">Add a Book  <span class="material-symbols-outlined">add_box</span></a>
+            </nav>
         </header>
 
         <!-- SEARCH_BOX -->
@@ -33,9 +38,6 @@
         <h1 class="current-page-title"><%= bookTitle %></h1>
         <h1 class="current-book-genre"><%= bookGenre %></h1>
         <hr class="page-info-divider">
-        
-        <!-- CATALOGUE_FEATURES -->
-        <a href="/add" id="add-book-from-bookinfo">Add Book</a>
 
         <!-- BOOK COVER -->
         <img class="book-cover-in-bookinfo" draggable="false" src="<%= bookCoverUrl %>">
