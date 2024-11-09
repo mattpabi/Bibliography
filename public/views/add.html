@@ -15,7 +15,7 @@
 
     <body>
         <!-- NAVBAR -->
-        <header class="header">
+        <header class="header" style="z-index: 999;">
             <a href="/" class="logo">Bibliography</a>
 
             <nav class="navbar" id="text-nav-beside-search">
@@ -37,10 +37,10 @@
         <!-- PAGE_INFO -->
         <h1 class="current-page-title">Add a Book</h1>
         <hr class="page-info-divider">
-        <div id="header-blocker" style="z-index: 999;""></div>
+        <div id="header-blocker" style="z-index: 998;"></div>
         
         <!-- FORM UPLOAD FILE -->
-        <form action="/api/addbook" method="POST" enctype="multipart/form-data" class="add-book-form" style="z-index: 998;">
+        <form action="/api/addbook" method="POST" enctype="multipart/form-data" class="add-book-form" style="z-index: 997;">
             <div>
                 <label for="bookcover">Book Cover:</label>
                 <input type="file" name="add_cover" id="add_cover" accept="image/*" required>
@@ -70,7 +70,7 @@
             </div>
             <button type="submit" id="submit-book-button">Submit Book</button>
         </form>
-        <div id="header-blocker" style="position: absolute; top: 100vh; z-index: 0;"></div>
+        <div id="header-blocker" style="position: absolute; top: 90vh; z-index: 0;"></div>
 
     <script>
         document.documentElement.style.overflow = "auto";

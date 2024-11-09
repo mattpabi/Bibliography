@@ -63,7 +63,7 @@ router.get("/add", function (req, res) {
 });
 
 // Route for the book info page
-// Dynamic Template Loader with Pug
+// Dynamic Template Loader with EJS
 router.get("/book/:id", function (req, res) {
     // Add this at the start of your route
     const viewPath = path.join(__dirname, "public", "views", "book.ejs");
@@ -92,6 +92,7 @@ router.get("/book/:id", function (req, res) {
                     bookCoverUrl: row.book_cover_url,
                     bookDescription: row.book_description, // Split description into paragraphs if it contains newlines
                     bookAuthor: row.author_name,
+                    bookId: book_id
                 };
 
                 // Add error handling for render

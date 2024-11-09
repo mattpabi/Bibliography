@@ -228,7 +228,7 @@ function updateButtonStates(offset, totalBookCount) {
         prevButton.style.pointerEvents = "auto";
         prevButton.textContent = `Show previous 15 books`;
 
-        // If there are more than 15 books and there is no more leftover books for the next page of the catalogue
+    // If there are more than 15 books and there is no more leftover books for the next page of the catalogue
     } else if (totalBookCount > 15 && offset + 15 > totalBookCount) {
         document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";
@@ -241,7 +241,7 @@ function updateButtonStates(offset, totalBookCount) {
         prevButton.style.pointerEvents = "auto";
         prevButton.textContent = `Show previous 15 books`;
 
-        // If there are more than 15 books and the amount of leftover books for the next page of the catalogue is less than 15
+    // If there are more than 15 books and the amount of leftover books for the next page of the catalogue is less than 15
     } else if (totalBookCount > 15 && offset + 30 > totalBookCount) {
         document.documentElement.style.overflow = "auto";
         nextButton.style.visibility = "visible";

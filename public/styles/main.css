@@ -241,7 +241,7 @@ a.logo:hover {
     left: 6vw;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    width: 175px;
+    width: 145px;
     background: #efe2ba;
     border-radius: 17px;
     border: 2px solid black;
@@ -328,6 +328,27 @@ h2.genres {
     transform: scale(1.02);
 }
 
+.delete-button {
+    position: fixed;
+    top: 75vh;
+    right: 6vw;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 150px;
+    border-radius: 17px;
+    background: rgba(217, 164, 164, 0.7);
+    border: 2px solid;
+    color: #3f2121;
+    box-shadow: 0px 3px 15px rgba(246, 4, 4, 0.1);
+    text-align: center;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+.delete-button:hover {
+    box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.5);
+    transform: scale(1.01);
+}
+
 #add-book-from-bookinfo {
     position: fixed;
     top: 6vh;
@@ -388,7 +409,7 @@ p.book-info-author {
 }
 
 .add-book-form {
-    position: fixed;
+    position: absolute;
     top: 30vh;
     left: 20vw;
 }
