@@ -71,31 +71,32 @@ let db = new sqlite3.Database(dbPath, async (err) => {
                         INSERT OR IGNORE INTO genres (genre_name)
                         SELECT genre_to_add
                         FROM (
-                            SELECT 'Fantasy' AS genre_to_add UNION ALL
+                            SELECT 'Classics' AS genre_to_add UNION ALL
+                            SELECT 'Fantasy' UNION ALL
                             SELECT 'Science Fiction' UNION ALL
                             SELECT 'Thriller' UNION ALL
                             SELECT 'Romance' UNION ALL
                             SELECT 'Mystery' UNION ALL
-                            SELECT 'Historical Fiction' UNION ALL
-                            SELECT 'Young Adult' UNION ALL
-                            SELECT 'Drama' UNION ALL
                             SELECT 'Biography' UNION ALL
                             SELECT 'Memoir' UNION ALL
                             SELECT 'Autobiography' UNION ALL
                             SELECT 'Self-Help' UNION ALL
+                            SELECT 'Business' UNION ALL
+                            SELECT 'Nonfiction' UNION ALL
+                            SELECT 'Young Adult' UNION ALL
+                            SELECT 'Historical Fiction' UNION ALL
+                            SELECT 'Drama' UNION ALL
                             SELECT 'Poetry' UNION ALL
                             SELECT 'Philosophy' UNION ALL
-                            SELECT 'Business' UNION ALL
                             SELECT 'Finance' UNION ALL
-                            SELECT 'Nonfiction' UNION ALL
                             SELECT 'Psychology' UNION ALL
                             SELECT 'Horror' UNION ALL
-                            SELECT 'Action and Adventure' UNION ALL
+                            SELECT 'Action' UNION ALL
+                            SELECT 'Adventure' UNION ALL
                             SELECT 'Dystopian' UNION ALL
-                            SELECT 'Humour and Comedy' UNION ALL
-                            SELECT 'Graphic Novels & Comics' UNION ALL
-                            SELECT 'Religion and Spirituality' UNION ALL
-                            SELECT 'Classics'
+                            SELECT 'Humour' UNION ALL
+                            SELECT 'Graphic Novels' UNION ALL
+                            SELECT 'Religion'
                         ) AS new_genres
                         WHERE NOT EXISTS (
                             SELECT 1 FROM genres WHERE genre_name = new_genres.genre_to_add

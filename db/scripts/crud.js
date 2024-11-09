@@ -178,7 +178,7 @@ const getAllBookData = (callback) => {
                     books.book_cover_url, 
                     books.book_description`;
 
-    // Execute the SQL query with the provided book_id
+    // Execute the SQL query
     db.all(sql, [], callback);
 };
 
@@ -207,10 +207,56 @@ const getLimitedBookData = (offset, callback) => {
     db.all(sql, [offset], callback);
 };
 
+// Get the data about all books
+const getBookDataByGenre = (genre, callback) => {
+    const sql = `SELECT 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description,
+                    GROUP_CONCAT(DISTINCT genres.genre_name) AS genre_name,
+                    GROUP_CONCAT(DISTINCT authors.author_name) AS author_name
+                FROM books
+                JOIN GenresToBooks ON books.book_id = GenresToBooks.book_id
+                JOIN genres ON GenresToBooks.genre_id = genres.genre_id 
+                JOIN AuthorToBook ON books.book_id = AuthorToBook.book_id
+                JOIN authors ON AuthorToBook.author_id = authors.author_id
+                WHERE EXISTS (
+                    SELECT 1
+                    FROM GenresToBooks
+                    JOIN genres ON GenresToBooks.genre_id = genres.genre_id
+                    WHERE GenresToBooks.book_id = books.book_id AND genres.genre_name = ?
+                )
+                GROUP BY 
+                    books.book_id, 
+                    books.book_title, 
+                    books.book_cover_url, 
+                    books.book_description`
+
+    // Execute the SQL query
+    db.all(sql, [genre], callback);
+};
+
+// Get the books combined with its author(s), for example: "Greenlights, by Matthew McConaughey"
+const getBookAndAuthor = (callback) => {
+    const sql = `SELECT 
+                    books.book_id,
+                    books.book_title || ', by ' || authors.author_name AS book_and_author
+                FROM books
+                JOIN AuthorToBook ON books.book_id = AuthorToBook.book_id
+                JOIN authors ON AuthorToBook.author_id = authors.author_id
+                GROUP BY books.book_id, books.book_title`
+    
+    // Execute the SQL query 
+    db.all(sql, [], callback);
+}
+
+
+
 const countBooks = (callback) => {
     const sql = `SELECT count (*) AS total_books FROM books`;
     db.all(sql, [], callback);
-}
+};
 
 // Export the CRUD functions to be used in other parts of the application
 module.exports = {
@@ -225,5 +271,7 @@ module.exports = {
     getBookData,
     getAllBookData,
     getLimitedBookData,
+    getBookDataByGenre,
+    getBookAndAuthor,
     countBooks
 };

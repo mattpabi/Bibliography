@@ -14,7 +14,9 @@ const {
     getBookData,
     getAllBookData,
     getLimitedBookData,
-    countBooks,
+    getBookDataByGenre,
+    getBookAndAuthor,
+    countBooks
 } = require("./db/scripts/crud"); // Import CRUD functions from the database scripts
 require("dotenv").config(); // Allow the app to work with .env files
 
@@ -155,7 +157,6 @@ router.get("/api/countbooks", function (req, res) {
             res.status(500).send(err.message);
         } else {
             const count = rows[0]["total_books"];
-            const bookCount = parseInt(count, 10);
             console.log("Number of books:", count);
             res.status(200).json(rows);
         }
@@ -175,6 +176,36 @@ router.get("/api/genres", function (req, res) {
         }
     });
 });
+
+// Route to retrieve all genres
+router.get("/api/genres/:genre", function (req, res) {
+    const decodedGenre = decodeURIComponent(req.params.genre);
+
+    // Call the readGenres function to fetch all genres from the database
+    getBookDataByGenre(decodedGenre, (err, rows) => {
+        if (err) {
+            // If there's an error, send a 500 status code and the error message
+            res.status(500).send(err.message);
+        } else {
+            // If successful, send a 200 status code and the genres data as JSON
+            res.status(200).json(rows);
+        }
+    });
+});
+
+// Route to get the books combined with its author(s), for example: "Greenlights, by Matthew McConaughey"
+router.get("/api/bookswithauthors", function (req, res) {
+    // Call the getBookAndAuthor function to fetch the book with its author in the same column
+    getBookAndAuthor((err, rows) => {
+        if (err) {
+            res.status(500).send(err.message);
+        } else {
+            res.status(200).json(rows);
+        }
+    });
+});
+
+
 
 // Route to update a book based on its ID
 router.put("/api/book/:id", (req, res) => {

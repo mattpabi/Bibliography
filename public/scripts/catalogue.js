@@ -4,6 +4,7 @@ var totalBookCount;
 document.addEventListener("DOMContentLoaded", () => {
     // Initialise the catalogue by loading books when the page is ready
     loadCatalogue(0);
+    loadGenres(); // Load genres alongside the catalogue
 });
 
 // Function to create a single book card element
@@ -143,72 +144,209 @@ function updateButtonStates(offset, totalBookCount) {
     // Adjust the condition based on your total number of items
     console.log(`OFFSET ${offset}`);
     console.log(`totalBookCount ${totalBookCount}`);
-    document.getElementById("catalogue-header-and-count").textContent = `Your Catalogue (${totalBookCount} books)`
+    document.getElementById("catalogue-header-and-count").textContent = `Your Catalogue (${totalBookCount} books)`;
 
     // If there are no books in the catalogue
     if (totalBookCount === 0) {
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.documentElement.style.overflow = 'hidden';
-        document.getElementById("previous-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
+        document.documentElement.style.overflow = "hidden";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
 
-    // For the first page
+        prevButton.style.visibility = "hidden";
+        prevButton.style.background = "#f3f1ea";
+        nextButton.style.pointerEvents = "auto";
+        prevButton.style.pointerEvents = "none";
+
+        // For the first page
     } else if (offset === 0) {
-        document.getElementById("next-page-button").style.visibility = "visible";
-        document.getElementById("previous-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").textContent = `Show next 15 books`;
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
+        nextButton.style.visibility = "visible";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+        nextButton.textContent = `Show next 15 books`;
 
-    // If there is exactly one book in the catalogue
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+        prevButton.textContent = `Currently on first page`;
+
+        // If there is exactly one book in the catalogue
     } else if (totalBookCount === 1) {
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.documentElement.style.overflow = 'hidden';
-        document.getElementById("next-page-button").style.visibility = "hidden";
-        document.getElementById("previous-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
-    
-    // If there are less than 5 books (one row on desktop) in the catalogue
+        document.documentElement.style.overflow = "hidden";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+        prevButton.textContent = `Currently on first page`;
+
+        // If there are less than 5 books (one row on desktop) in the catalogue
     } else if (totalBookCount <= 5) {
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.documentElement.style.overflow = 'hidden';
-        document.getElementById("next-page-button").style.visibility = "hidden";
-        document.getElementById("previous-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
-    
-    // If there are more than 5 books but at most 15 books in the catalogue (enough to fit one page)
-    } else if (totalBookCount > 5 && totalBookCount <=15) {
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.documentElement.style.overflow = 'auto';
-        document.getElementById("next-page-button").style.visibility = "hidden";
-        document.getElementById("previous-page-button").style.visibility = "hidden";
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
-    
-    // If there are more than 15 books
-    } else if (totalBookCount > 15 && (totalBookCount - offset - 15) >= 15 ) {
-        document.getElementById("next-page-button").style.visibility = "visible";
-        document.getElementById("previous-page-button").style.visibility = "visible";
-        document.getElementById("next-page-button").textContent = `Show next 15 books`;
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
+        document.documentElement.style.overflow = "hidden";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
 
-    } else if (totalBookCount > 15 && (offset + 15) > totalBookCount ) {
-        document.getElementById("next-page-button").style.visibility = "visible";
-        document.getElementById("previous-page-button").style.visibility = "visible";
-        document.getElementById("next-page-button").textContent = `No more books`;
-        document.getElementById("next-page-button").style.background = "#f3f1ea";
-        document.getElementById("next-page-button").style.pointerEvents = "none";
-        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+        prevButton.textContent = `Currently on first page`;
+
+        // If there are more than 5 books but at most 15 books in the catalogue (enough to fit one page)
+    } else if (totalBookCount > 5 && totalBookCount <= 15) {
+        document.documentElement.style.overflow = "auto";
+        nextButton.style.visibility = "hidden";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#f3f1ea";
+        prevButton.style.pointerEvents = "none";
+        prevButton.textContent = `Currently on first page`;
+
+        // If there are more than 15 books and the amount of books over the current page is more than 15
+    } else if (totalBookCount > 15 && totalBookCount - offset - 15 >= 15) {
+        nextButton.style.visibility = "visible";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+        nextButton.textContent = `Show next 15 books`;
+
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#efe2ba";
+        prevButton.style.pointerEvents = "auto";
+        prevButton.textContent = `Show previous 15 books`;
+
+        // If there are more than 15 books and there is no more leftover books for the next page of the catalogue
+    } else if (totalBookCount > 15 && offset + 15 > totalBookCount) {
+        nextButton.style.visibility = "visible";
+        nextButton.style.background = "#f3f1ea";
+        nextButton.style.pointerEvents = "none";
+        nextButton.textContent = `No more books`;
+
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#efe2ba";
+        prevButton.style.pointerEvents = "auto";
+        prevButton.textContent = `Show previous 15 books`;
+
+        // If there are more than 15 books and the amount of leftover books for the next page of the catalogue is less than 15
+    } else if (totalBookCount > 15 && offset + 30 > totalBookCount) {
+        nextButton.style.visibility = "visible";
+        nextButton.style.background = "#efe2ba";
+        nextButton.style.pointerEvents = "auto";
+        nextButton.textContent = `Show next ${totalBookCount - offset - 15} books`;
+
+        prevButton.style.visibility = "visible";
+        prevButton.style.background = "#efe2ba";
+        prevButton.style.pointerEvents = "auto";
+        prevButton.textContent = `Show previous 15 books`;
+    }
+}
+
+// Function to fetch and populate genres
+async function loadGenres() {
+    try {
+        const response = await fetch("/api/genres");
         
-    } else if (totalBookCount > 15 && (offset + 30) > totalBookCount) {
-        document.getElementById("next-page-button").style.visibility = "visible";
-        document.getElementById("previous-page-button").style.visibility = "visible";
-        document.getElementById("next-page-button").textContent = `Show next ${totalBookCount - offset - 15} books`;
-        document.getElementById("next-page-button").style.background = "#efe2ba";
-        document.getElementById("previous-page-button").textContent = `Show previous 15 books`;
-        document.getElementById("next-page-button").style.pointerEvents = "auto";
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        
+        const genres = await response.json();
+        const genresList = document.getElementById("genres-ulist");
+        
+        if (!genresList) return;
 
-    };
+        // Clear existing list items
+        genresList.innerHTML = "";
+
+        // Create and append new list items
+        genres.forEach((genre) => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+
+            a.textContent = genre.genre_name;
+            // Create the proper URL for the genre
+            const encodedGenre = encodeURIComponent(genre.genre_name);
+            a.href = `/api/genres/${encodedGenre}`;
+
+            // Store genre_id as data attribute if needed
+            a.setAttribute("data-genre-id", genre.genre_id);
+
+            // Add click event listener to each genre link
+            a.addEventListener("click", async (e) => {
+                e.preventDefault(); // Prevent default navigation
+                const catalogueContainer = document.getElementById(
+                    "catalogue-container"
+                );
+                if (catalogueContainer) {
+                    catalogueContainer.innerHTML =
+                        '<div class="loading">Loading books...</div>';
+                }
+
+                // Fetch books for this genre
+                const books = await fetchBooksByGenre(genre.genre_name);
+
+                // Update the container with the genre-specific books
+                if (catalogueContainer && books) {
+                    catalogueContainer.innerHTML = "";
+                    books.forEach((book) => {
+                        const bookCard = createBookCard(book);
+                        catalogueContainer.appendChild(bookCard);
+                    });
+                }
+
+                // Hide pagination buttons when showing genre-specific books
+                const nextButton = document.getElementById("next-page-button");
+                const prevButton = document.getElementById(
+                    "previous-page-button"
+                );
+                if (nextButton) nextButton.style.visibility = "hidden";
+                if (prevButton) prevButton.style.visibility = "hidden";
+
+                // Highlight the selected genre
+                document.querySelectorAll("#genres-ulist a").forEach((link) => {
+                    link.classList.remove("active");
+                });
+                e.target.classList.add("active");
+            });
+
+            li.appendChild(a);
+            genresList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error fetching genres:", error);
+        const genresList = document.getElementById("genres-ulist");
+        if (genresList) {
+            genresList.innerHTML = "<li>Error loading genres</li>";
+        }
+    }
+}
+
+// Function to fetch books by genre
+async function fetchBooksByGenre(genreName) {
+    try {
+        const encodedGenre = encodeURIComponent(genreName);
+        const response = await fetch(`/api/genres/${encodedGenre}`);
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const books = await response.json();
+        window.scrollTo(0, 0);
+        document.getElementById("catalogue-header-and-count").textContent = `Your Catalogue (${totalBookCount} books), ${Object.keys(books).length} books in ${genreName}`;
+        return books;
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        const catalogueContainer = document.getElementById(
+            "catalogue-container"
+        );
+        if (catalogueContainer) {
+            catalogueContainer.innerHTML =
+                '<div class="error">Error loading books</div>';
+        }
+        return null;
+    }
 }

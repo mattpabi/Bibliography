@@ -1,49 +1,56 @@
-// Array of available keywords for search
-let availableKeywords = [
-    "Shoedog, by Phil Knight",
-    "The Ride of A Lifetime, by Bob Iger",
-    "Dune I, by Frank Herbert",
-    "Dune II, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-    "Dune III, by Frank Herbert",
-];
-
 // Select the results box element from the DOM
 const resultsBox = document.querySelector(".result-box");
 // Select the input box element from the DOM
 const inputBox = document.getElementById("input-box");
 
+// Debounce function to limit API calls
+function debounce(func, wait) {
+    // Declare a variable to hold the timer ID
+    let timeout;
+
+    // Return a new function that wraps the original function
+    // ...args uses the rest parameter syntax to collect all arguments passed to the function into an array called args
+    return function (...args) {
+        // Clear the previous timeout if it exists
+        clearTimeout(timeout);
+
+        // Set a new timeout to call the original function after 'wait' milliseconds
+        timeout = setTimeout(() => {
+            // Call the original function with the correct context and arguments
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
 // Event listener for keyup event on the input box
-inputBox.onkeyup = function () {
-    let result = []; // Initialize an empty array for results
-    let input = inputBox.value; // Get the current value of the input box
+inputBox.onkeyup = debounce(async function () {
+    let input = inputBox.value.trim(); // Get the current value of the input box
 
-    // Check if the input is not empty
+    // Only fetch if input is not empty
     if (input.length) {
-        // Filter available keywords based on the input
-        result = availableKeywords.filter((keyword) => {
-            return keyword.toLowerCase().includes(input.toLowerCase());
-        });
-        console.log(result); // Log the filtered results to the console
-    }
+        try {
+            // Fetch the API data
+            const response = await fetch("/api/bookswithauthors");
+            const apiData = await response.json();
 
-    // Call display function to update the results box
-    display(input, result);
-};
+            // Filter the results based on input
+            const result = apiData.filter((item) => {
+                return item.book_and_author
+                    .toLowerCase()
+                    .includes(input.toLowerCase());
+            });
+
+            // Display the results
+            display(input, result);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+            display(input, []); // Show empty results in case of error
+        }
+    } else {
+        // If input is empty, clear the results
+        display("", []);
+    }
+}, 300); // Wait 300ms after user stops typing before making API call
 
 // Function to display results in the results box
 function display(input, result) {
@@ -54,9 +61,23 @@ function display(input, result) {
         return;
     }
 
-    // Map over the result array to create list items with onclick event
-    const content = result.map((list) => {
-        return "<li onclick=selectInput(this)>" + list + "</li>";
+    // If no results found, show the "Book not found" message with more styling
+    if (result.length === 0) {
+        resultsBox.innerHTML = `
+            <div class="search-no-result">
+                <a href="/add">
+                    Book not found, click here to add it
+                </a>
+            </div>
+        `;
+        document.getElementById("search-row-id").style.borderBottom =
+            "2px solid black";
+        return;
+    }
+
+    // Map over the result array to create list items
+    const content = result.map((item) => {
+        return `<li onclick="selectInput(this)" data-id="${item.book_id}">${item.book_and_author}</li>`;
     });
 
     // Update the innerHTML of results box with generated list items
@@ -67,7 +88,12 @@ function display(input, result) {
 
 // Function to handle selection of a list item
 function selectInput(list) {
-    inputBox.value = list.innerHTML; // Set input box value to selected list item text
-    resultsBox.innerHTML = ""; // Clear the results box
+    const bookId = list.getAttribute("data-id");
+    // Navigate to the book page
+    window.location.href = `/book/${bookId}`;
+
+    // If you want to update the input box before navigation (optional)
+    inputBox.value = list.textContent.trim();
+    resultsBox.innerHTML = "";
     document.getElementById("search-row-id").style.borderBottom = "";
 }
