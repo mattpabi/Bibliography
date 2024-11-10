@@ -592,11 +592,21 @@ textarea {
     text-align: right;
 }
 
-#next-page-button,
-#previous-page-button {
+
+.button-nav-container {
+    z-index: 998;
     position: fixed;
     top: 19.15vh;
-    right: 5.78vw;
+    left: 68vw;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    margin-top: 1vh;
+    margin-right: 1vw;
+}
+
+#next-page-button,
+#previous-page-button {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
     background: #efe2ba;

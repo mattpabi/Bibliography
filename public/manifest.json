@@ -9,7 +9,7 @@
     "display": "standalone",
     "icons": [
         {
-            "src": "./bibliography_512x512.png",
+            "src": "./img/bibliography_512x512.png",
             "sizes": "512x512"
         }
     ]

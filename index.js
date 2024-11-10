@@ -33,12 +33,10 @@ const upload = multer({ storage: storage });
 // CONFIGURE ROUTES //
 
 // Serving static files
-
 app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the 'public' directory
-
-app.use("/styles/main.css",express.static(path.join(__dirname, "public", "styles", "main.css")));
-app.use("/scripts/searchresults.js", express.static(path.join(__dirname, "scripts", "searchresults.js"))); // Serve static files from the 'scripts' directory
-
+app.use("/styles/",express.static(path.join(__dirname, "public", "styles")));
+app.use("/scripts/",express.static(path.join(__dirname, "public", "scripts")));
+app.use("/img/",express.static(path.join(__dirname, "public", "img")));
 
 // Route for the home page
 router.get("/", function (req, res) {
