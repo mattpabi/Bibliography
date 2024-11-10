@@ -50,7 +50,7 @@ inputBox.onkeyup = debounce(async function () {
         // If input is empty, clear the results
         display("", []);
     }
-}, 300); // Wait 300ms after user stops typing before making API call
+}, 100); // Wait 300ms after user stops typing before making API call
 
 // Function to display results in the results box
 function display(input, result) {

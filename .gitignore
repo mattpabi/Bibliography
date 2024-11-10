@@ -5,3 +5,4 @@ package-lock.json
 /db/bibliography.db
 /node_modules
 /uploads
+.vercel
