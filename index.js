@@ -114,7 +114,7 @@ router.get("/api/books/:offset", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error fetching books:", error);
-        res.status(500).json({ error: "Failed to fetch books" });
+        res.status(500).json({ error: "Failed to fetch books. Please check your internet connection." });
     }
 });
 
@@ -136,7 +136,7 @@ router.get("/api/countbooks", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error counting books:", error);
-        res.status(500).send("Failed to count books");
+        res.status(500).send("Failed to count books. Please check your internet connection.");
     }
 });
 
@@ -151,7 +151,7 @@ router.get("/api/genres", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error retrieving genres:", error);
-        res.status(500).send("Failed to retrieve genres");
+        res.status(500).send("Failed to retrieve genres. Please check your internet connection.");
     }
 });
 
@@ -168,7 +168,7 @@ router.get("/api/genres/:genre", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error retrieving books by genre:", error);
-        res.status(500).send("Failed to retrieve books by genre");
+        res.status(500).send("Failed to retrieve books by genre. Please check your internet connection.");
     }
 });
 
@@ -183,7 +183,7 @@ router.get("/api/bookswithauthors", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error retrieving books with authors:", error);
-        res.status(500).send("Failed to retrieve books with authors");
+        res.status(500).send("Failed to retrieve books with authors. Please check your internet connection.");
     }
 });
 
@@ -201,7 +201,7 @@ router.put("/api/book/:id", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error updating book:", error);
-        res.status(500).send("Failed to update the book");
+        res.status(500).send("Failed to update the book. Please check your internet connection.");
     }
 });
 
@@ -216,7 +216,7 @@ router.delete("/api/book/:id", async (req, res) => {
     } catch (error) {
         // If there's an error, send a 500 status code and a generic error message
         console.error("Error deleting book:", error);
-        res.status(500).send("Failed to delete the book");
+        res.status(500).send("Failed to delete the book. Please check your internet connection.");
     }
 });
 
@@ -242,7 +242,7 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
         // Check if there was an error during upload
         if (error) {
             console.log(error.message);
-            return res.status(500).json({ error: "Failed to upload cover image." });
+            return res.status(500).json({ error: "Failed to upload cover image. Please check your internet connection." });
         }
 
         // Get the public URL of the uploaded file
@@ -250,7 +250,7 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
         book_cover_url = uploadedFile.publicUrl;
         console.log(book_cover_url);
     } catch (error) {
-        return res.status(500).json({ error: "Failed to upload cover image." });
+        return res.status(500).json({ error: "Failed to upload cover image. Please check your internet connection." });
     }
 
     // Extract book details from the request body
@@ -279,7 +279,7 @@ router.post("/api/addbook", upload.single("add_cover"), async (req, res) => {
         
     } catch (error) {
         console.error("Error adding book or author:", error);
-        res.status(500).send("Failed to add book or author.");
+        res.status(500).send("Failed to add book or author. Please check your internet connection.");
     }
 });
 
