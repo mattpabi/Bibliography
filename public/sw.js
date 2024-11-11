@@ -55,43 +55,88 @@ self.addEventListener("activate", (evt) => {
 
 // Fetch event
 self.addEventListener("fetch", (evt) => {
+    
+    // Function to refresh specific API caches
+    const refreshApiCaches = async () => {
+        const cachesToRefresh = [
+            '/api/countbooks',
+            '/catalogue',
+            // Since /api/books/:offset is a pattern, we'll need to find all matching cache entries
+            ...Array.from(await caches.keys())
+                .filter(key => key.startsWith('/api/books/'))
+        ];
+
+        const cache = await caches.open(DYNAMIC_CACHE_NAME);
+        
+        for (const url of cachesToRefresh) {
+            try {
+                const freshResponse = await fetch(url);
+                if (freshResponse.ok) {
+                    await cache.put(url, freshResponse);
+                }
+            } catch (error) {
+                console.error(`Failed to refresh cache for ${url}:`, error);
+            }
+        }
+    };
+
+    // Handle the fetch event
     evt.respondWith(
-        caches.match(evt.request).then((cachedResponse) => {
-            // If we have a cached response, verify it's not an error
-            if (cachedResponse && cachedResponse.ok) {
-                return cachedResponse;
+        (async () => {
+            const request = evt.request;
+            
+            // Check if this is a POST to /api/addbook or DELETE to /api/book/:id
+            if (
+                (request.method === 'POST' && request.url.includes('/api/addbook')) ||
+                (request.method === 'DELETE' && request.url.match(/\/api\/book\/\d+/))
+            ) {
+                try {
+                    // First, make the original request
+                    const response = await fetch(request);
+                    
+                    // If the request was successful, refresh the caches
+                    if (response.ok) {
+                        refreshApiCaches();
+                    }
+                    
+                    return response;
+                } catch (error) {
+                    console.error('Error in POST/DELETE handling:', error);
+                    throw error;
+                }
             }
 
-            // If no cache or cached response was an error, make a network request
-            return fetch(evt.request)
-                .then((fetchedResponse) => {
-                    // Check if the response is an error (including 500 status)
-                    if (!fetchedResponse.ok) {
-                        if (
-                            evt.request.url.indexOf(".html") > -1 ||
-                            evt.request.headers
-                                .get("accept")
-                                .includes("text/html")
-                        ) {
-                            return caches.match("./views/fallback.html");
-                        }
-                    }
+            // For all other requests, use the existing cache logic
+            try {
+                const cachedResponse = await caches.match(request);
+                if (cachedResponse && cachedResponse.ok) {
+                    return cachedResponse;
+                }
 
-                    // If response is ok, cache and return it
-                    return caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
-                        cache.put(evt.request.url, fetchedResponse.clone());
-                        return fetchedResponse;
-                    });
-                })
-                .catch(() => {
-                    // Handle network failures
+                const fetchedResponse = await fetch(request);
+                
+                if (!fetchedResponse.ok) {
                     if (
-                        evt.request.url.indexOf(".html") > -1 ||
-                        evt.request.headers.get("accept").includes("text/html")
+                        request.url.indexOf(".html") > -1 ||
+                        request.headers.get("accept").includes("text/html")
                     ) {
                         return caches.match("./views/fallback.html");
                     }
-                });
-        })
+                }
+
+                // Cache successful responses
+                const cache = await caches.open(DYNAMIC_CACHE_NAME);
+                cache.put(request.url, fetchedResponse.clone());
+                return fetchedResponse;
+            } catch (error) {
+                if (
+                    request.url.indexOf(".html") > -1 ||
+                    request.headers.get("accept").includes("text/html")
+                ) {
+                    return caches.match("./views/fallback.html");
+                }
+                throw error;
+            }
+        })()
     );
 });
