@@ -49,7 +49,7 @@ async function loadCatalogue(offset) {
 
     // Show loading state while fetching books
     catalogueContainer.innerHTML =
-        '<div class="loading">Loading books... (you may want to check your internet connection)</div>';
+        '<div class="loading">Loading books...<br><span style="font-size: 0.9rem;">(You may want to check your internet connection)</span></div>';
 
     // Fetch books from the server
     const listOfBooks_response = await fetch(`/api/books/${offset}`);
@@ -300,7 +300,7 @@ async function loadGenres() {
                 );
                 if (catalogueContainer) {
                     catalogueContainer.innerHTML =
-                        '<div class="loading">Loading books... (you may want to check your internet connection)</div>';
+                        '<div class="loading">Loading books...<br><span style="font-size: 0.9rem;">(You may want to check your internet connection)</span></div>';
                 }
 
                 // Fetch books for this genre
