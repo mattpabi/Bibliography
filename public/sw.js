@@ -1,25 +1,32 @@
+// Service Worker for caching resources and handling network requests
+
+// Function to add static resources to the cache
 const addResourcesToCache = async (resources) => {
     try {
         console.info("sw: cache.addResourcesToCache");
         const cache = await caches.open("static_cache");
-        ok = await cache.addAll(resources);
+        // Add all specified resources to the cache
+        const ok = await cache.addAll(resources);
         console.log("Successfully cached:");
     } catch (err) {
         console.error("sw: cache.addAll");
     }
 };
 
+// Function to put a dynamic response in the cache
 const putInCache = async (request, response) => {
-    // Only cache if response is valid
+    // Only cache if the response status is 200 (OK)
     if (response.status === 200) {
         console.log(`Status is 200, will proceed to cache`);
         const cache = await caches.open("dynamic_cache");
+        // Store the request and response in the cache
         await cache.put(request, response);
     } else {
         console.log(`STATUS IS NOT 200, IT IS ${response.status}`);
     }
 };
 
+// Function to handle caching and fetching resources
 const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
     // First try to get the resource from the cache
     const responseFromCache = await caches.match(request);
@@ -28,36 +35,20 @@ const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
         return responseFromCache;
     }
 
-    // Next try to use the preloaded response, if it's there
-    // NOTE: Chrome throws errors regarding preloadResponse, see:
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1420515
-    // https://github.com/mdn/dom-examples/issues/145
-    // To avoid those errors, remove or comment out this block of preloadResponse
-    // code along with enableNavigationPreload() and the "activate" listener.
-    const preloadResponse = await preloadResponsePromise;
-    if (preloadResponse) {
-        console.info("using preload response", preloadResponse);
-        putInCache(request, preloadResponse.clone());
-        return preloadResponse;
-    }
-
     // Next try to get the resource from the network
     try {
         console.log("Fetching from network:", request.url);
         const responseFromNetwork = await fetch(request.clone());
-        // response may be used only once
-        // we need to save clone to put one copy in cache
-        // and serve second one
+        // Clone the response before caching
         putInCache(request, responseFromNetwork.clone());
         return responseFromNetwork;
     } catch (error) {
+        // If network fetch fails, try to get a fallback response
         const fallbackResponse = await caches.match(fallbackUrl);
         if (fallbackResponse) {
             return fallbackResponse;
         }
-        // when even the fallback response is not available,
-        // there is nothing we can do, but we must always
-        // return a Response object
+        // Fallback: Return a generic error response
         return new Response("Network error happened", {
             status: 408,
             headers: { "Content-Type": "text/plain" },
@@ -65,54 +56,7 @@ const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
     }
 };
 
-const enableNavigationPreload = async () => {
-    console.log("enableNavigationPreload enter...");
-    if (self.registration.navigationPreload) {
-        console.log("register enableNavigationPreload enter...");
-        // Enable navigation preloads!
-        await self.registration.navigationPreload.enable();
-    }
-};
-
-self.addEventListener("activate", (event) => {
-    console.log("activate event");
-    event.waitUntil(enableNavigationPreload());
-});
-
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        addResourcesToCache([
-            "/",
-            "./scripts/searchresults.js",
-            "./styles/main.css",
-            "./views/add.html",
-            "./views/book.ejs",
-            "./views/index.html",
-            "./views/fallback.html",
-            "./img/bibliography_512x512.png",
-            "./img/bibliography_favicon.ico",
-            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0",
-            "https://fonts.googleapis.com/css2?family=Roboto",
-            "https://fonts.googleapis.com/css2?family=Merriweather",
-            "https://fonts.googleapis.com/css2?family=Caveat",
-            "https://fonts.googleapis.com/css2?family=Chakra+Petch",
-        ])
-    );
-});
-
-self.addEventListener("fetch", (event) => {
-    if (event.request.method === "POST" || event.request.method === "DELETE") {
-        event.respondWith(handlePostOrDelete(event.request));
-    } else {
-        event.respondWith(
-            cacheFirst({
-                request: event.request,
-                preloadResponsePromise: event.preloadResponse,
-            })
-        );
-    }
-});
-
+// Function to handle POST or DELETE requests
 async function handlePostOrDelete(request) {
     console.log("Handling POST or DELETE request:", request.url);
 
@@ -135,6 +79,17 @@ async function handlePostOrDelete(request) {
     }
 }
 
+// Function to enable navigation preloads
+const enableNavigationPreload = async () => {
+    console.log("enableNavigationPreload enter...");
+    if (self.registration.navigationPreload) {
+        console.log("register enableNavigationPreload enter...");
+        // Enable navigation preloads!
+        await self.registration.navigationPreload.enable();
+    }
+};
+
+// Function to perform cache updates in the background
 async function updateCacheInBackground(wasSuccessful) {
     console.log(`Starting background cache update - ${wasSuccessful}`);
     if ("sync" in self.registration) {
@@ -153,66 +108,126 @@ async function updateCacheInBackground(wasSuccessful) {
     }
 }
 
+// Function to perform actual cache updates
 async function performCacheUpdate(wasSuccessful) {
     console.log(
         "Performing cache update, original request was successful:",
         wasSuccessful
     );
 
-    //if (wasSuccessful) {
     try {
+        // Fetch the total number of books from the API
         const cbResponse = await fetch("/api/countbooks");
         const totalBookCount = await cbResponse.clone().json();
         console.log("Total Book Count ", totalBookCount);
-        //if (catalogueResponse.ok) {
-        //const cache = await caches.open(STATIC_CACHE_NAME);
+
+        // Cache the countbooks response
         await putInCache("/api/countbooks", cbResponse.clone());
+
+        // Fetch the initial set of books (first page)
         const catalogueResponse = await fetch("/api/books/0");
         await putInCache("/api/books/0", catalogueResponse.clone());
-        //await cache.put('/catalogue', catalogueResponse.clone());
+
         console.log("Catalogue cache updated successfully");
+
+        // Calculate the number of full pages and remaining books
         const noOfFullPages = Math.floor(totalBookCount / 15);
         const remainderOfBooks = totalBookCount % 15;
         const newOffset = noOfFullPages * 15;
+
         console.log(
             `For ${totalBookCount} books, there are ${noOfFullPages} pages.`
         );
+
+        // Loop through each full page and cache its contents
         for (let page = 1; page <= noOfFullPages; page++) {
             var pOffset = page * 15;
             console.log(
                 `Fetching books for page ${page} with offset of ${pOffset}`
             );
+
+            // Construct the URL for the current page
             const url = `/api/books/${pOffset}`;
+
+            // Fetch data for the current page
             const pgResponse = await fetch(url);
-            await putInCache(url, pgResponse.clone());
+            await putInCache(url, pgResponse.clone()); // Cache the fetched data
+
             console.log(
                 `Cached books for page ${page} with offset of ${pOffset}`
             );
         }
-        // handle remainder of books if any
+
+        // Handle any remaining books (if the total count is not divisible by 15)
         if (remainderOfBooks > 0) {
             console.log(`Fetching remainder books ${remainderOfBooks}`);
+
+            // Construct the URL for the last page with remaining books
             const url = `/api/books/${newOffset}`;
             console.log(`Fetching books with offset ${newOffset}`);
+
+            // Fetch the remaining books
             const pgResponse = await fetch(url);
-            await putInCache(url, pgResponse.clone());
+            await putInCache(url, pgResponse.clone()); // Cache the remaining books
+
             console.log(`Cached remainder books using offset ${newOffset}`);
         }
-        //} else {
-        //  console.log('Catalogue fetch failed:', catalogueResponse.status);
-        //}
     } catch (error) {
         console.error("Error updating catalogue cache:", error);
     }
-    //} else {
-    //  console.log('Skipping cache update due to unsuccessful original request');
-    //}
 }
 
+// Event listener for service worker activation
+self.addEventListener("activate", (event) => {
+    console.log("activate event");
+    event.waitUntil(enableNavigationPreload());
+});
+
+// Event listener for service worker installation
+self.addEventListener("install", (event) => {
+    event.waitUntil(
+        addResourcesToCache([
+            "/",
+            "./scripts/searchresults.js",
+            "./styles/main.css",
+            "./views/add.html",
+            "./views/book.ejs",
+            "./views/index.html",
+            "./views/fallback.html",
+            "./img/bibliography_512x512.png",
+            "./img/bibliography_favicon.ico",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0",
+            "https://fonts.googleapis.com/css2?family=Roboto",
+            "https://fonts.googleapis.com/css2?family=Merriweather",
+            "https://fonts.googleapis.com/css2?family=Caveat",
+            "https://fonts.googleapis.com/css2?family=Chakra+Petch",
+        ])
+    );
+});
+
+// Event listener for network requests
+self.addEventListener("fetch", (event) => {
+    if (event.request.method === "POST" || event.request.method === "DELETE") {
+        event.respondWith(handlePostOrDelete(event.request));
+    } else {
+        event.respondWith(
+            cacheFirst({
+                request: event.request,
+                preloadResponsePromise: event.preloadResponse,
+            })
+        );
+    }
+});
+
+// Event listener for service worker synchronization
 self.addEventListener("sync", (event) => {
     console.log("add event listener SYNC");
+
+    // Check if the sync event is specifically for updating the catalogue cache
     if (event.tag === "update-catalogue-cache") {
         console.log("add event listener SYNC  --- catalogue");
+
+        // When this condition is met, execute the cache update function
         event.waitUntil(performCacheUpdate(true));
     }
 });

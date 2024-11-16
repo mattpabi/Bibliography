@@ -1,5 +1,6 @@
-// Register the service worker and set up background sync
+// Check if the browser supports Service Workers and Background Sync
 if ("serviceWorker" in navigator && "SyncManager" in window) {
+    // Attempt to register the service worker
     navigator.serviceWorker
         .register("../sw.js")
         .then(function (registration) {
@@ -7,7 +8,7 @@ if ("serviceWorker" in navigator && "SyncManager" in window) {
             return navigator.serviceWorker.ready;
         })
         .then(function (registration) {
-            // Register background sync
+            // Register background sync if service worker registration was successful
             console.log("Background sync registered successfully");
             return registration.sync.register("update-catalogue-cache");
         })
