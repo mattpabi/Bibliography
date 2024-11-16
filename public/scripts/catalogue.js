@@ -367,7 +367,7 @@ async function fetchBooksByGenre(genreName) {
         );
         if (catalogueContainer) {
             catalogueContainer.innerHTML =
-                '<div class="error">Error loading books</div>';
+                '<div class="error">Error loading books<br><span style="font-size: 0.9rem;">(You may want to check your internet connection)</span></div>';
         }
         return null;
     }
