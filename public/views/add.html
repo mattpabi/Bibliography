@@ -76,19 +76,6 @@
         <script src="/scripts/searchresults.js"></script>
         <script>
             document.documentElement.style.overflow = "auto";
-            
-            // Add event listener to the delete button when clicked
-            document
-                .getElementById("submit-book-button")
-                .addEventListener("click", async function () {
-                    // Store the clicked button element in a variable
-                    const button = this;
-
-                    // Tell the reader to not press the submit button twice, before proceeding with the submission
-                    alert(`We are submitting your new book to your catalogue!
-
-Please do not click on the submit button while this page loads, to prevent duplicate entries.`)
-                });
         </script>
     </body>
 </html>
