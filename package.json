@@ -1,5 +1,5 @@
 {
-  "name": "bibliography",
+  "name": "bookshelf",
   "version": "1.0.0",
   "description": "Build and curate your personal catalogue of books.",
   "main": "index.js",

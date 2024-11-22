@@ -1,2 +1,2 @@
-# Bibliography
-Build your own catalogue of books with Bibliography.
+# Bookshelf
+Build your own catalogue of books with Bookshelf.
