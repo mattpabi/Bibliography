@@ -1,7 +1,11 @@
-.env
-.DS_Store
-package-lock.json
-/db/bibliography.db
+# Ignore all Node modules
 /node_modules
-/uploads
+
+# Ignore environment variables
+.env
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore Vercel deployment/connection folder
 .vercel
