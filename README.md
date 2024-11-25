@@ -1,7 +1,7 @@
 # Bookshelf
 Build your own catalogue of books with ***Bookshelf***.
 
-The final live website can be vistied here: https://bookshelf-by-mattpabi.vercel.app/
+The final live website can be visited here: https://bookshelf-by-mattpabi.vercel.app/
 
 ---
 
@@ -14,9 +14,11 @@ The final live website can be vistied here: https://bookshelf-by-mattpabi.vercel
 
 ### If you wish to install this Node project on your local machine:
 
-1. Simply clone this repository and run `npm install` at the root directory of the project folder (i.e. run the command when you are in the same folder as the `package.json` file).
+1. Clone this repository onto your machine.
+   
+2. Run `npm install` at the root directory of the project folder (i.e. run the command when you are in the same folder as the `package.json` file). You may ignore any errors or vulnerability warnings.
 
-2. From there, you will need to create a `.env` file to contain your connections with your own Supabase and Vercel PosgreSQL databases. **I will not provide my own personal API keys in this repository.**
+3. From there, you will need to create a `.env` file to contain your connections with your own Supabase and Vercel PosgreSQL databases. **I will not provide my own personal API keys in this repository.**
    * Simply create a `.env` file at the root directory, fill in the following fields and paste in your API and connection keys, after signing up for the necessary accounts with Supabase and Vercel:
        ```
        SUPABASE_PROJECT_URL=""
@@ -35,5 +37,5 @@ The final live website can be vistied here: https://bookshelf-by-mattpabi.vercel
        SUPABASE_PROJECT_URL=""
        ```
 
-3. Once setup, the project should be ready to be run locally. Simply run `node --watch index.js` at the root directory of the project, and enter in `localhost:8080` on your browser's search bar to view the running app.
+4. Once setup, the project should be ready to be run locally. Simply run `node --watch index.js` at the root directory of the project, and enter in `localhost:8080` on your browser's search bar to view the running app.
    * If there is a conflict of ports, you can go into the `index.js` file and change the JavaScript `port` constant from `8080` to whichever port is available on your machine. You can find it in the 16th line of the `index.js` file.
